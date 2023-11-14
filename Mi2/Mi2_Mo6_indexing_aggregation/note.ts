@@ -85,6 +85,8 @@
     $bucket: make groups based on different range ,
     $facet: multiple pipeline array, [{},{},..pipeline 1...],[{},{},..pipeline 2...],  when create multiple result/summary/report on same data set, then use $facet
     $lookup: populate docs from foreign collection,
+    $round: make a decimal value to round
+    $toInt:     convert a double type number to integer
 
     explain():      // get the query status including time, index etc
     indexing: 
@@ -132,7 +134,7 @@
                 countDoc: { $sum:1 },                           // count the number of doc
                 totalSalary: { $sum: "$salary",},               // sum the salary property values
                 maxSalary: { $max: "$salary"},                  // return  highest salary value, not doc
-                avgSalary: { $avg: "$salary"},                  // return the average salary value
+                avgSalary: { $avg: { $toInt:"$salary"}},        // return the average salary value
                 interestPerCountry: { $push: "$interests"},     // it will push the unwinded interest element
             }
         },
@@ -141,6 +143,7 @@
         { 
             $project: {
                 _id:1, 
+                groupName: "$_id",
                 newEmailList: 1,
                 "newDocList.name": 1, 
                 "newDocList.email": 1, 
@@ -148,8 +151,9 @@
                 countDoc:1,
                 totalSalary: 1,
                 maximumSalary: "$maxSalary",
-                averageSalary: "$avgSalary",
-                salaryRangeMaxMin: { $substruct: ["$maxSalary","$minSalary"]}
+                averageSalary: { $round: ["$avgSalary", 3]},
+                salaryRangeMaxMin: { $substruct: ["$maxSalary","$minSalary"]},
+                
             }
         }
     ])
@@ -237,7 +241,18 @@
                 foreignField: "_id",
                 as: "user",
             }
-        }
+        },
+        {
+            $unwind: "$products"
+        },
+        {
+            $lookup:{
+                from: "products",
+                localField: "products.product_id",
+                foreignField: "_id",
+                as: "user",
+            }
+        },
     ])
 
 
