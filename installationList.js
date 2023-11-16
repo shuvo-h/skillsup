@@ -15,4 +15,27 @@
         "watch":    "npx tsc -w"
     },
 
+
+    add in tsconfig.json file
+    {
+        "include": ["src"], // which files to compile
+        "exclude": ["node_modules"], // which files to skip
+    }
+
+    // add prettier and eslint(make sure to copy the .eslintrc.json file)
+    - npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --save-dev
+    - npx eslint --init                 // create eslint initialized file
+            > copy or edit the .eslintrc.json file
+            > add .eslintignore file for "node_modules" & "dist"
+                > add this script in package.json file
+                "scripts": {
+                    "lint": "eslint src --ignore-path .eslintignore --ext .js,.ts",
+                    "prettier": "prettier --ignore-path .gitignore --write ......................path and files extensions"
+                },
+    - npm run lint --fix            // it will run the "lint" script from package.json which indicating to fix all .ts .js file from src folder and ignore .eslintignore
+    - npm install --save-dev prettier
+            > modify .prettierrc.json
+    - npx prettier --write src/index.ts    
+    - npm install --save-dev eslint-config-prettier
+    - npm i -D ts-node-dev                              // run .ts file on development(not production) 
 */
