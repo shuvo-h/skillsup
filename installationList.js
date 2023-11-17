@@ -38,4 +38,11 @@
     - npx prettier --write src/index.ts    
     - npm install --save-dev eslint-config-prettier
     - npm i -D ts-node-dev                              // run .ts file on development(not production) 
+
+
+
+    // (M8_project-structure) command sequence before push to git
+    - npm run lint                      // fix if any error found
+    - npm run prettier                  // check if formatting is correct
+
 */
