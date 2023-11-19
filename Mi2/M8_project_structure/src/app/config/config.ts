@@ -12,4 +12,5 @@ dotenv.config({
 export const env = {
   port: process.env.PORT || 5001,
   DB_URL: process.env.MONGO_URL,
+  BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS,
 };

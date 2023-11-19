@@ -36,6 +36,7 @@ const localGuardianZodValidationSchema = z.object({
 
 export const studentZodValidationSchema = z.object({
     id: z.string().min(1, { message: 'ID must be at least 1 characters long' }),
+    password: z.string().min(1, { message: 'Passwordt be at least 1 characters long' }).max(20,{message:"password maximum 20 characters allowed"}),
     name: userNameZodValidationSchema,
     email: z.string().email({ message: 'Invalid email format' }),
     gender: z.enum(['male', 'female', 'other']).refine(value => ['male', 'female', 'other'].includes(value), {
@@ -53,6 +54,7 @@ export const studentZodValidationSchema = z.object({
     isActive: z.enum(['active', 'blocked']).refine(value => value === 'active' || value === 'blocked', {
         message: 'Invalid value for isActive',
     }),
+    isDeleted: z.boolean().optional().default(false),
 }).refine(data => {
     if (!data) {  // to prevent ts not used of 'data' error
         return false;

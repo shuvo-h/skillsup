@@ -27,7 +27,17 @@ const getAllStudentsFromDB = async () => {
   return result;
 };
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await StudentModel.findOne({ id });
+  // const result = await StudentModel.findOne({ id });
+  const result = await StudentModel.aggregate([
+    {
+      $match:{id}
+    },
+  ]);
+  return result;
+};
+const deleteSingleStudentFromDB = async (id: string) => {
+  // never delete doc from DB in real projecr, it can create inconsistency in "ref"
+  const result = await StudentModel.updateOne({ id },{isDeleted: true});
   return result;
 };
 
@@ -35,4 +45,5 @@ export const studentService = {
   createStudentIntoDB,
   getAllStudentsFromDB,
   getSingleStudentFromDB,
+  deleteSingleStudentFromDB
 };

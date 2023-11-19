@@ -34,6 +34,7 @@ export type TStudent = {
   id: string;
   name: TUserName;
   email: string;
+  password: string;
   gender: 'male' | 'female' | 'other';
   dateOfBirth?: string;
   contactNo: string;
@@ -45,10 +46,12 @@ export type TStudent = {
   localGuardian: TLocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
+  isDeleted: boolean
 };
 
 // for creating custom instance mongoose OOP model method
 export type StudentInstanceMethods = {
+  // eslint-disable-next-line no-unused-vars
   isUserExistByInstanceMethod(id: string): Promise<TStudent | null>;
 };
 export type TStudentInstanceModel = Model<
@@ -59,5 +62,6 @@ export type TStudentInstanceModel = Model<
 
 // for creating custom static mongoose OOP model method
 export interface StudentStaticModel extends Model<TStudent> {
+  // eslint-disable-next-line no-unused-vars
   isUserExistByStaticMethod(id: string): Promise<TStudent | null>;
 }
