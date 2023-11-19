@@ -1,5 +1,7 @@
+import { Model } from 'mongoose';
+
 // import { Schema, model, connect } from 'mongoose';
-export type BloodGroup =
+export type TBloodGroup =
   | 'A+'
   | 'A-'
   | 'B+'
@@ -8,7 +10,7 @@ export type BloodGroup =
   | 'AB-'
   | 'O+'
   | 'O-';
-export type Guardian = {
+export type TGuardian = {
   fatherName: string;
   fatherOccupation: string;
   fatherContactNo: string;
@@ -16,31 +18,46 @@ export type Guardian = {
   motherOccupation: string;
   motherContactNo: string;
 };
-export type UserName = {
+export type TUserName = {
   firstName: string;
   middleName: string;
   lastName: string;
 };
-export type LocalGuardian = {
+export type TLocalGuardian = {
   name: string;
   occupation: string;
   contactNo: string;
   address: string;
 };
 
-export type Student = {
+export type TStudent = {
   id: string;
-  name: UserName;
+  name: TUserName;
   email: string;
-  gender: 'male' | 'female';
+  gender: 'male' | 'female' | 'other';
   dateOfBirth?: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroup?: BloodGroup;
+  bloodGroup?: TBloodGroup;
   presentAddress: string;
   permanentAddress: string;
-  guardian: Guardian;
-  localGuardian: LocalGuardian;
+  guardian: TGuardian;
+  localGuardian: TLocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
 };
+
+// for creating custom instance mongoose OOP model method
+export type StudentInstanceMethods = {
+  isUserExistByInstanceMethod(id: string): Promise<TStudent | null>;
+};
+export type TStudentInstanceModel = Model<
+  TStudent,
+  Record<string, never>,
+  StudentInstanceMethods
+>;
+
+// for creating custom static mongoose OOP model method
+export interface StudentStaticModel extends Model<TStudent> {
+  isUserExistByStaticMethod(id: string): Promise<TStudent | null>;
+}
