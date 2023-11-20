@@ -1,0 +1,30 @@
+Entities_:
+User
+Tour
+Locations
+Review
+Booking
+
+
+collections :
+User
+{
+    name:"",
+    email:"",
+    review: [
+        {
+            review: "good",
+            rating: 4.5,
+        }
+    ],
+    booking: [
+        {tourName:""}
+    ],
+}
+Tour
+
+locations: [
+    {
+        area: ""
+    }
+]

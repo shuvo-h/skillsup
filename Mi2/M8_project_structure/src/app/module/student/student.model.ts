@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 import validator from 'validator';
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 import {
   // StudentInstanceMethods,
   StudentStaticModel,
@@ -90,10 +90,10 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   },
 });
 
-
 // const studentSchema = new Schema<TStudent,TStudentInstanceModel,StudentInstanceMethods>({   // for instance custom methods
-const studentSchema = new Schema<TStudent,StudentStaticModel>(
-    {                                // for static custom methods
+const studentSchema = new Schema<TStudent, StudentStaticModel>(
+  {
+    // for static custom methods
     id: {
       type: String,
       required: [true, 'id is required'],
@@ -102,7 +102,7 @@ const studentSchema = new Schema<TStudent,StudentStaticModel>(
     password: {
       type: String,
       required: [true, 'id is required'],
-      maxlength: [20,"password maximum 20 characters allowed"],
+      maxlength: [20, 'password maximum 20 characters allowed'],
     },
     name: {
       type: userNameSchema,
@@ -168,56 +168,56 @@ const studentSchema = new Schema<TStudent,StudentStaticModel>(
       required: true,
       default: 'active',
     },
-    isDeleted:{
+    isDeleted: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   {
-    toJSON:{
-      virtuals: true
+    toJSON: {
+      virtuals: true,
     },
-  }
+  },
 );
-
-
 
 // vertual fields
 // the properties which is not saved into database but we can retrive the data from existing properties and send to response
-studentSchema.virtual('fullName').get(function(){
+studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-})
-
+});
 
 // pre-save middleware/hook will work on .save() / .create()
-studentSchema.pre('save',async function (next) {
-  // here 'this' means the current _doc
+studentSchema.pre('save', async function (next) {
+  // // 'this' -> refer to the current _doc
   // make password hash before save/create
-  this.password = await bcrypt.hash(this.password, Number(env.BCRYPT_SALT_ROUNDS))
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(env.BCRYPT_SALT_ROUNDS),
+  );
   next();
-})
+});
 // post-save middleware/hook will work on .save() / .create()
-studentSchema.post('save',function (doc,next) {
+studentSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
-})
-// pre-query middleware/hook will work on .find() 
-studentSchema.pre('find',function (next) {
-  this.find({isDeleted:{$ne:true}}); // filter the docs isDeleted == false
+});
+// pre-query middleware/hook will work on .find()
+studentSchema.pre('find', function (next) {
+  // 'this' -> refer to the methods/query
+  this.find({ isDeleted: { $ne: true } }); // filter the docs isDeleted == false
   next();
-})
+});
 // pre-query middleware/hook will work on .findOne()
-studentSchema.pre('findOne',function (next) {
-  this.findOne({isDeleted:{$ne:true}}); // filter the docs isDeleted == false
+studentSchema.pre('findOne', function (next) {
+  this.findOne({ isDeleted: { $ne: true } }); // filter the docs isDeleted == false
   next();
-})
+});
 // pre-query middleware/hook will work on .aggregate
-studentSchema.pre('aggregate',function (next) {
+studentSchema.pre('aggregate', function (next) {
   // console.log(this.pipeline()); // current aggregate pipeline, push a new pipeline here
-  this.pipeline().unshift({$match:{isDeleted:{$ne:true}}})
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
-})
-
+});
 
 // create custom static methods
 studentSchema.statics.isUserExistByStaticMethod = async function (id: string) {
@@ -227,7 +227,9 @@ studentSchema.statics.isUserExistByStaticMethod = async function (id: string) {
 
 // create custom instance methods
 // define custom schema methods. must write the type interface for this custom method and provide that as generic in Schema
-studentSchema.methods.isUserExistByInstanceMethod = async function (id: string) {
+studentSchema.methods.isUserExistByInstanceMethod = async function (
+  id: string,
+) {
   const existingUser = await StudentModel.findOne({ id });
   return existingUser;
 };
@@ -236,8 +238,10 @@ studentSchema.methods.isUserExistByInstanceMethod = async function (id: string) 
 // export const StudentModel = model<TStudent, TStudentInstanceModel>('Student',studentSchema,);
 
 // create model using static type for custom methods
-export const StudentModel = model<TStudent, StudentStaticModel>('Student',studentSchema,);
-
+export const StudentModel = model<TStudent, StudentStaticModel>(
+  'Student',
+  studentSchema,
+);
 
 // pre-save middleware  'save'
 // post-save middleware   'save'
