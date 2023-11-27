@@ -127,7 +127,7 @@ const studentSchema = new Schema<TStudent, StudentStaticModel>(
       required: true,
     },
     dateOfBirth: {
-      type: String,
+      type: Date,
     },
     contactNo: {
       type: String,

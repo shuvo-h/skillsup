@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import validator from 'validator';
+import { z } from 'zod';
 
 const userNameZodValidationSchema = z.object({
   firstName: z
@@ -58,59 +58,58 @@ const localGuardianZodValidationSchema = z.object({
     .min(2, { message: 'Address must be at least 2 characters long' }),
 });
 
-export const studentZodValidationSchema = z
-  .object({
-    id: z.string().min(1, { message: 'ID must be at least 1 characters long' }),
-    password: z
-      .string()
-      .min(1, { message: 'Passwordt be at least 1 characters long' })
-      .max(20, { message: 'password maximum 20 characters allowed' }),
-    name: userNameZodValidationSchema,
-    email: z.string().email({ message: 'Invalid email format' }),
-    gender: z
-      .enum(['male', 'female', 'other'])
-      .refine((value) => ['male', 'female', 'other'].includes(value), {
-        message: 'Invalid value for gender',
+export const createStudentZodValidationSchema = z.object({
+  body: z
+    .object({
+      password: z
+        .string()
+        .min(1, { message: 'Passwordt be at least 1 characters long' })
+        .max(20, { message: 'password maximum 20 characters allowed' }),
+      student: z.object({
+        name: userNameZodValidationSchema,
+        email: z.string().email({ message: 'Invalid email format' }),
+        gender: z
+          .enum(['male', 'female', 'other'])
+          .refine((value) => ['male', 'female', 'other'].includes(value), {
+            message: 'Invalid value for gender',
+          }),
+        dateOfBirth: z.date().optional(),
+        contactNo: z.string().min(2, {
+          message: 'Contact number must be at least 2 characters long',
+        }),
+        emergencyContactNo: z.string().min(2, {
+          message:
+            'Emergency contact number must be at least 2 characters long',
+        }),
+        bloodGroup: z
+          .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+          .optional(),
+        presentAddress: z.string().min(2, {
+          message: 'Present address must be at least 2 characters long',
+        }),
+        permanentAddress: z.string().min(2, {
+          message: 'Permanent address must be at least 2 characters long',
+        }),
+        guardian: guardianZodValidationSchema,
+        localGuardian: localGuardianZodValidationSchema,
+        profileImg: z.string().min(2, {
+          message: 'Profile image URL must be at least 2 characters long',
+        }),
       }),
-    dateOfBirth: z.string().optional(),
-    contactNo: z
-      .string()
-      .min(2, { message: 'Contact number must be at least 2 characters long' }),
-    emergencyContactNo: z.string().min(2, {
-      message: 'Emergency contact number must be at least 2 characters long',
-    }),
-    bloodGroup: z
-      .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-      .optional(),
-    presentAddress: z.string().min(2, {
-      message: 'Present address must be at least 2 characters long',
-    }),
-    permanentAddress: z.string().min(2, {
-      message: 'Permanent address must be at least 2 characters long',
-    }),
-    guardian: guardianZodValidationSchema,
-    localGuardian: localGuardianZodValidationSchema,
-    profileImg: z.string().min(2, {
-      message: 'Profile image URL must be at least 2 characters long',
-    }),
-    isActive: z
-      .enum(['active', 'blocked'])
-      .refine((value) => value === 'active' || value === 'blocked', {
-        message: 'Invalid value for isActive',
-      }),
-    isDeleted: z.boolean().optional().default(false),
-  })
-  .refine(
-    (data) => {
-      if (!data) {
-        // to prevent ts not used of 'data' error
-        return false;
-      }
-      // Custom refinement for the entire student object if needed
-      return true;
-    },
-    {
-      message: 'Custom validation error message for the entire student object',
-      path: ['student'], // Adjust the path as needed
-    },
-  );
+    })
+    .refine(
+      (data) => {
+        if (!data) {
+          // to prevent ts not used of 'data' error
+          return false;
+        }
+        // Custom refinement for the entire student object if needed
+        return true;
+      },
+      {
+        message:
+          'Custom validation error message for the entire student object',
+        path: ['student'], // Adjust the path as needed
+      },
+    ),
+});
