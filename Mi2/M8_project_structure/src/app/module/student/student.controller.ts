@@ -3,6 +3,7 @@ import { studentJoiValidationSchema } from './student.joi.validation';
 import { studentService } from './student.service';
 import { studentZodValidationSchema } from './student.zod.validation';
 
+/*
 const createStudent = async (req: Request, res: Response) => {
   try {
     const student = req.body.student;
@@ -39,6 +40,8 @@ const createStudent = async (req: Request, res: Response) => {
     });
   }
 };
+
+
 const getAllStudents = async (req: Request, res: Response) => {
   try {
     const result = await studentService.getAllStudentsFromDB();
@@ -56,7 +59,7 @@ const getAllStudents = async (req: Request, res: Response) => {
     });
   }
 };
-
+*/
 const getSingleStudent = async (req: Request, res: Response) => {
   try {
     const studentId = req.params.studentId;
@@ -96,8 +99,8 @@ const deleteSingleStudent = async (req: Request, res: Response) => {
 };
 
 export const StudentController = {
-  createStudent,
-  getAllStudents,
+  // createStudent,
+  // getAllStudents,
   getSingleStudent,
   deleteSingleStudent,
 };
