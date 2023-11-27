@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
+
 import {
   // StudentInstanceMethods,
   StudentStaticModel,
@@ -10,7 +10,6 @@ import {
   // TStudentInstanceModel,
   TUserName,
 } from './student.interface';
-import { env } from '../../config/config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -99,10 +98,11 @@ const studentSchema = new Schema<TStudent, StudentStaticModel>(
       required: [true, 'id is required'],
       unique: true,
     },
-    password: {
-      type: String,
-      required: [true, 'id is required'],
-      maxlength: [20, 'password maximum 20 characters allowed'],
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User id is required'],
+      unique: true,
+      ref: 'User',
     },
     name: {
       type: userNameSchema,
@@ -162,12 +162,6 @@ const studentSchema = new Schema<TStudent, StudentStaticModel>(
       type: String,
       required: [true, 'Profile image is required'],
     },
-    isActive: {
-      type: String,
-      enum: ['active', 'blocked'],
-      required: true,
-      default: 'active',
-    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -186,6 +180,7 @@ studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
 
+/*
 // pre-save middleware/hook will work on .save() / .create()
 studentSchema.pre('save', async function (next) {
   // // 'this' -> refer to the current _doc
@@ -201,6 +196,7 @@ studentSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
+*/
 // pre-query middleware/hook will work on .find()
 studentSchema.pre('find', function (next) {
   // 'this' -> refer to the methods/query

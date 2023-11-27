@@ -1,10 +1,11 @@
-import { env } from "../../config/config";
-import { TStudent } from "../student/student.interface";
-import { NewUser } from "./user.interface";
-import { UserModel } from "./user.model";
+import { StudentModel } from './../student/student.model';
+import { env } from '../../config/config';
+import { TStudent } from '../student/student.interface';
+import { TUser } from './user.interface';
+import { UserModel } from './user.model';
 
-const createStudentIntoDB = async (password:string,studentData: TStudent) => {
-    /*
+const createStudentIntoDB = async (password: string, studentData: TStudent) => {
+  /*
     // [OOP 1]: built-in static method .create()
     const isStudentExist = await StudentModel.isUserExistByStaticMethod(
       student.id,
@@ -14,7 +15,7 @@ const createStudentIntoDB = async (password:string,studentData: TStudent) => {
     const result = await StudentModel.create(student);
     */
 
-    /*
+  /*
     // instance way
     // [OOP]: biuil-in instance method
     const studentObj = new StudentModel(student);
@@ -26,35 +27,32 @@ const createStudentIntoDB = async (password:string,studentData: TStudent) => {
     const result = await studentObj.save();
     */
 
-    // create a user object
-    const user:NewUser = {};
-    
-    // if password not given, use default password
-    user.password = password || env.default_password as string;
-    
+  // create a user object
+  const userData: Partial<TUser> = {}; // Partial = take some of the properties, rest are optional
 
-    // set user role as student 
-    user.role = 'student';
+  // if password not given, use default password
+  userData.password = password || (env.default_password as string);
 
-    // manually generate id
-    user.id = '2030100001';
+  // set user role as student
+  userData.role = 'student';
 
-    // create a user 
-    const result = await UserModel.create(user);
+  // manually generate id
+  userData.id = '2030100001';
 
-    // create a student 
-    const result1 = await UserModel.create(user);
-    if (Object.keys(result).length) {
-      // set id, _id as user
-      studentData.id = result.id;
-      studentData.user = result._id;
+  // create a user
+  const newUser = await UserModel.create(userData);
 
-    }
+  // create a student
+  if (Object.keys(newUser).length) {
+    // set id, _id as user
+    studentData.id = newUser.id; // embeding id for query
+    studentData.user = newUser._id; // reference ID for populate
 
-  
-    return result;
+    const newStudent = await StudentModel.create(studentData);
+    return newStudent;
+  }
 };
 
-export const UserService  = {
-    createStudentIntoDB,
-}
+export const UserService = {
+  createStudentIntoDB,
+};

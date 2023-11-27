@@ -26,37 +26,27 @@ const guardianZodValidationSchema = z.object({
   fatherName: z
     .string()
     .min(2, { message: "Father's name must be at least 2 characters long" }),
-  fatherOccupation: z
-    .string()
-    .min(2, {
-      message: "Father's occupation must be at least 2 characters long",
-    }),
-  fatherContactNo: z
-    .string()
-    .min(2, {
-      message: "Father's contact number must be at least 2 characters long",
-    }),
+  fatherOccupation: z.string().min(2, {
+    message: "Father's occupation must be at least 2 characters long",
+  }),
+  fatherContactNo: z.string().min(2, {
+    message: "Father's contact number must be at least 2 characters long",
+  }),
   motherName: z
     .string()
     .min(2, { message: "Mother's name must be at least 2 characters long" }),
-  motherOccupation: z
-    .string()
-    .min(2, {
-      message: "Mother's occupation must be at least 2 characters long",
-    }),
-  motherContactNo: z
-    .string()
-    .min(2, {
-      message: "Mother's contact number must be at least 2 characters long",
-    }),
+  motherOccupation: z.string().min(2, {
+    message: "Mother's occupation must be at least 2 characters long",
+  }),
+  motherContactNo: z.string().min(2, {
+    message: "Mother's contact number must be at least 2 characters long",
+  }),
 });
 
 const localGuardianZodValidationSchema = z.object({
-  name: z
-    .string()
-    .min(2, {
-      message: "Local guardian's name must be at least 2 characters long",
-    }),
+  name: z.string().min(2, {
+    message: "Local guardian's name must be at least 2 characters long",
+  }),
   occupation: z
     .string()
     .min(2, { message: 'Occupation must be at least 2 characters long' }),
@@ -86,31 +76,23 @@ export const studentZodValidationSchema = z
     contactNo: z
       .string()
       .min(2, { message: 'Contact number must be at least 2 characters long' }),
-    emergencyContactNo: z
-      .string()
-      .min(2, {
-        message: 'Emergency contact number must be at least 2 characters long',
-      }),
+    emergencyContactNo: z.string().min(2, {
+      message: 'Emergency contact number must be at least 2 characters long',
+    }),
     bloodGroup: z
       .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
       .optional(),
-    presentAddress: z
-      .string()
-      .min(2, {
-        message: 'Present address must be at least 2 characters long',
-      }),
-    permanentAddress: z
-      .string()
-      .min(2, {
-        message: 'Permanent address must be at least 2 characters long',
-      }),
+    presentAddress: z.string().min(2, {
+      message: 'Present address must be at least 2 characters long',
+    }),
+    permanentAddress: z.string().min(2, {
+      message: 'Permanent address must be at least 2 characters long',
+    }),
     guardian: guardianZodValidationSchema,
     localGuardian: localGuardianZodValidationSchema,
-    profileImg: z
-      .string()
-      .min(2, {
-        message: 'Profile image URL must be at least 2 characters long',
-      }),
+    profileImg: z.string().min(2, {
+      message: 'Profile image URL must be at least 2 characters long',
+    }),
     isActive: z
       .enum(['active', 'blocked'])
       .refine((value) => value === 'active' || value === 'blocked', {
