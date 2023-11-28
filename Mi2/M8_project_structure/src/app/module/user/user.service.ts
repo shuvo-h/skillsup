@@ -3,6 +3,7 @@ import { env } from '../../config/config';
 import { TStudent } from '../student/student.interface';
 import { TUser } from './user.interface';
 import { UserModel } from './user.model';
+import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 
 const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   /*
@@ -36,8 +37,9 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   // set user role as student
   userData.role = 'student';
 
-  // manually generate id
-  userData.id = '2030100001';
+  // auto generate id
+  const generateStudentId = async(payload:TAcademicSemester) =>{}
+  userData.id = generateStudentId();
 
   // create a user
   const newUser = await UserModel.create(userData);
@@ -56,3 +58,4 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
 export const UserService = {
   createStudentIntoDB,
 };
+

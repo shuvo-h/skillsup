@@ -19,8 +19,13 @@ app.get('/', (req: Request, res: Response) => {
   res.send(a);
 });
 
+app.get("/a",(req,res)=>{
+  res.send("Hello Schedule");
+})
 // global error
 app.use(globalErrorHandler);
 
 // Not Found router
 app.use(notFound);
+
+

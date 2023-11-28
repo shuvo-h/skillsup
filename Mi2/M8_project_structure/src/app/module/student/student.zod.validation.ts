@@ -92,6 +92,7 @@ export const createStudentZodValidationSchema = z.object({
         }),
         guardian: guardianZodValidationSchema,
         localGuardian: localGuardianZodValidationSchema,
+        admissionSemester: z.string(),
         profileImg: z.string().min(2, {
           message: 'Profile image URL must be at least 2 characters long',
         }),
