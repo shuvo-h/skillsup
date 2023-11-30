@@ -25,16 +25,53 @@ const createStudentIntoDB = async (student: TStudent) => {
 };
 */
 const getAllStudentsFromDB = async () => {
-  const result = await StudentModel.find({});
+  // const result = await StudentModel.find({}).populate('admissionSemester  academicDepartment');
+  const result = await StudentModel.find({}).populate([
+    {
+      path: 'academicDepartment',
+      populate: {
+        path: "academicFaculty"
+      }
+    },
+    { path: "admissionSemester" },
+    { path: "user" },
+  ]);
   return result;
 };
 const getSingleStudentFromDB = async (id: string) => {
-  // const result = await StudentModel.findOne({ id });
+  const result = await StudentModel.findOne({ id }).populate([
+    {
+      path: 'academicDepartment',
+      populate: {
+        path: "academicFaculty"
+      }
+    },
+    { path: "admissionSemester" },
+    { path: "user" },
+  ]);
+  /*
   const result = await StudentModel.aggregate([
     {
       $match: { id },
     },
+    {
+      $lookup:{
+        from: "academicdepartments",  // check the name from atlas(not model), all small characters  
+        localField:"academicDepartment",
+        foreignField:"_id",
+        as: "academicDepartment"
+      }
+    },
+    {
+      $lookup:{
+        from: "academicfaculties",  // check the name from atlas(not model), all small characters 
+        localField:"academicDepartment.academicFaculty",
+        foreignField:"_id",
+        as: "academicDepartment.academicFaculty"
+      }
+    },
   ]);
+  */
   return result;
 };
 const deleteSingleStudentFromDB = async (id: string) => {

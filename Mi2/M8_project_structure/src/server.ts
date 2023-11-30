@@ -7,8 +7,6 @@ async function main() {
     // connect DB
     if (env.DB_URL) {
       await mongoose.connect(env.DB_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
         dbName: 'test',
       } as ConnectOptions);
     }

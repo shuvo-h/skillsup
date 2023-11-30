@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import AppError from '../../errors/AppError';
 import {
   AcademicSemesterCodes,
   AcademicSemesterNames,
@@ -48,7 +49,7 @@ academicSemesterSchema.pre('save', async function (next) {
     year: this.year,
   });
   if (isSemesterExist) {
-    throw new Error('Semester is already exist!');
+    throw new AppError(403,'Semester is already exist!');
   }
   next();
 });

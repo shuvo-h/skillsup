@@ -73,7 +73,7 @@ export const createStudentZodValidationSchema = z.object({
           .refine((value) => ['male', 'female', 'other'].includes(value), {
             message: 'Invalid value for gender',
           }),
-        dateOfBirth: z.date().optional(),
+        dateOfBirth: z.string().optional(),
         contactNo: z.string().min(2, {
           message: 'Contact number must be at least 2 characters long',
         }),
