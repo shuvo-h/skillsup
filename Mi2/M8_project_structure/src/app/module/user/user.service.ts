@@ -55,7 +55,7 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   
   
   try {
-    // [transition_step: 2]: start session 
+    // [transition_step: 2]: start transection 
     session.startTransaction();
     if (admissionSemester) {
       userData.id = await generateStudentId(admissionSemester);
@@ -94,7 +94,7 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
     await session.abortTransaction();
     // [transition_step: 7]: end the session after aborting 
         await session.endSession();
-    
+        throw new AppError(500,(error as {message:string}).message || "Failed to create student");
   }
 
 };

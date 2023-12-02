@@ -1,3 +1,9 @@
+
+import httpStatus from 'http-status';
+import mongoose from 'mongoose';
+import AppError from '../../errors/AppError';
+import { UserModel } from '../user/user.model';
+import { TStudent } from './student.interface';
 import { StudentModel } from './student.model';
 /*
 const createStudentIntoDB = async (student: TStudent) => {
@@ -74,10 +80,70 @@ const getSingleStudentFromDB = async (id: string) => {
   */
   return result;
 };
+const updateSingleStudentIntoDB = async (id: string,payload:Partial<TStudent>) => {
+  const {name, guardian,localGuardian,...remainingStudentData} = payload;
+  const modifiedUpdatedData:Record<string,unknown> = {...remainingStudentData};
+  if (name && Object.keys(name).length) {
+    for(const [key,value] of Object.entries(name)){
+      modifiedUpdatedData[`name.${key}`] = value;
+    }
+  }
+  if (guardian && Object.keys(guardian).length) {
+    for(const [key,value] of Object.entries(guardian)){
+      modifiedUpdatedData[`guardian.${key}`] = value;
+    }
+  }
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for(const [key,value] of Object.entries(localGuardian)){
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  const result = await StudentModel.findOneAndUpdate(
+    { id },
+    {...modifiedUpdatedData},
+    {new: true, runValidators:true}
+  );
+  
+  return result;
+};
 const deleteSingleStudentFromDB = async (id: string) => {
   // never delete doc from DB in real projecr, it can create inconsistency in "ref"
-  const result = await StudentModel.updateOne({ id }, { isDeleted: true });
-  return result;
+  // [transition_step: 1]: create session 
+  const session = await mongoose.startSession();
+  
+  try {
+    // [transition_step: 2]: start transection 
+    session.startTransaction();
+
+    // [transition_step: 3.1]: change status a student(transection_1)
+    const deletedStudent = await StudentModel.findOneAndUpdate(
+      { id }, 
+      { isDeleted: true },
+      {session,new: true, runValidators:true}
+      );
+      if (!deletedStudent) {
+        throw new AppError(httpStatus.BAD_REQUEST,"Student not found");
+      }
+      // [transition_step: 3.2]: change status a user(transection_2)
+    const deletedUser = await UserModel.findOneAndUpdate(
+      {id},
+      {isDeleted:true},
+      {session,new:true,runValidators:true},
+    );
+    if (!deletedUser) {
+      throw new AppError(httpStatus.BAD_REQUEST,"User not found");
+    }
+    await session.commitTransaction();
+    await session.endSession();
+    return deletedStudent;
+  } catch (error ) {
+    // [transition_step: 6]: cancel the transection 
+    // [transition_step: 7]: end the session after aborting 
+    await session.abortTransaction();
+    await session.endSession();
+    throw new AppError(500,(error as {message:string}).message || "Failed to delete user");
+  }
 };
 
 export const studentService = {
@@ -85,4 +151,5 @@ export const studentService = {
   getAllStudentsFromDB,
   getSingleStudentFromDB,
   deleteSingleStudentFromDB,
+  updateSingleStudentIntoDB,
 };

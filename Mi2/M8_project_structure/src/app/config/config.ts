@@ -8,8 +8,12 @@ dotenv.config({
   path: envFilePath,
 });
 
+export const isProduction = process.env.NODE_ENV === 'production';
+export const isDevelopment = process.env.NODE_ENV === 'development';
+
 // env list
 export const env = {
+  node_env: process.env.NODE_ENV,
   port: process.env.PORT || 5001,
   DB_URL: process.env.MONGO_URL,
   BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS,

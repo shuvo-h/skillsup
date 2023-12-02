@@ -68,3 +68,15 @@ If you want to work together or hire me to help you build and scale
 → MAIL ME @ manageanirudh@gmail.com
 
 */
+
+
+/*
+Git Merge of two branch:
+merge two git repository. Bring code from branchB to branchA
+    >  git checkout branchA
+    >  git merge branchB
+    >  git commit -m "Merge branchB into branchA"
+    >  git push origin branchA
+
+
+*/
