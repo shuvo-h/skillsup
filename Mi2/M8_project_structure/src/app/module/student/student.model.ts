@@ -185,7 +185,7 @@ const studentSchema = new Schema<TStudent, StudentStaticModel>(
 // vertual fields
 // the properties which is not saved into database but we can retrive the data from existing properties and send to response
 studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+  return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
 });
 
 /*

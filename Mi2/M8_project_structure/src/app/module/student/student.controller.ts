@@ -43,7 +43,7 @@ const createStudent = async (req: Request, res: Response) => {
 */
 
 const getAllStudents = catchAsync(async (req, res) => {
-  const result = await studentService.getAllStudentsFromDB();
+  const result = await studentService.getAllStudentsFromDB(req.query);
 
   sendRes(res, {
     statusCode: httpStatus.OK,
