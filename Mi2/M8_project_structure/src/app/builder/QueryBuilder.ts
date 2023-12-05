@@ -9,7 +9,7 @@ class QueryBuilder<T> {
         this.query = query;
     }
 
-    search(searchableFields:string[]){
+    search(searchableFields:string[]){              // build find() query with Regex match
         const searchTerm = this?.query?.searchTerm;
         console.log(searchTerm);
         
@@ -27,7 +27,7 @@ class QueryBuilder<T> {
     }
 
 
-    filter(){
+    filter(){                                   // build find() query with exact match
         const queryObj = {...this.query};
         const excludeFields = ['searchTerm','sort','page','limit','fields'];
         excludeFields.forEach(el=> delete queryObj[el]);

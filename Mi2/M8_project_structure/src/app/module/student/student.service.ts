@@ -118,7 +118,7 @@ const getAllStudentsFromDB = async (query:Record<string,unknown>) => {
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await StudentModel.findOne({ id }).populate([
+  const result = await StudentModel.findById(id).populate([
     {
       path: 'academicDepartment',
       populate: {
@@ -172,8 +172,8 @@ const updateSingleStudentIntoDB = async (id: string,payload:Partial<TStudent>) =
     }
   }
 
-  const result = await StudentModel.findOneAndUpdate(
-    { id },
+  const result = await StudentModel.findByIdAndUpdate(
+    id,
     {...modifiedUpdatedData},
     {new: true, runValidators:true}
   );
@@ -190,8 +190,8 @@ const deleteSingleStudentFromDB = async (id: string) => {
     session.startTransaction();
 
     // [transition_step: 3.1]: change status a student(transection_1)
-    const deletedStudent = await StudentModel.findOneAndUpdate(
-      { id }, 
+    const deletedStudent = await StudentModel.findByIdAndUpdate(
+      id , 
       { isDeleted: true },
       {session,new: true, runValidators:true}
       );
@@ -199,8 +199,9 @@ const deleteSingleStudentFromDB = async (id: string) => {
         throw new AppError(httpStatus.BAD_REQUEST,"Student not found");
       }
       // [transition_step: 3.2]: change status a user(transection_2)
-    const deletedUser = await UserModel.findOneAndUpdate(
-      {id},
+      const userId = deletedStudent.user;
+      const deletedUser = await UserModel.findByIdAndUpdate(
+        userId,
       {isDeleted:true},
       {session,new:true,runValidators:true},
     );
