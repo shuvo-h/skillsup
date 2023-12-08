@@ -189,6 +189,15 @@ studentSchema.virtual('fullName').get(function () {
 });
 
 /*
+studentSchema.virtual('academicDepartmentInfo', {
+  ref: 'AcademicDepartment',
+  localField: 'academicDepartment',
+  foreignField: '_id',
+  justOne: true, // Set to true if you expect only one result
+});
+*/
+
+/*
 // pre-save middleware/hook will work on .save() / .create()
 studentSchema.pre('save', async function (next) {
   // // 'this' -> refer to the current _doc
