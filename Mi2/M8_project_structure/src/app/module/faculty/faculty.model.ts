@@ -88,6 +88,8 @@ const facultySchema = new Schema<TFaculty, FacultyModel>(
     },
   },
   {
+    // _id: false, // don't create mongoose _id in doc
+    // timestamps: true,
     toJSON: {
       virtuals: true,
     },

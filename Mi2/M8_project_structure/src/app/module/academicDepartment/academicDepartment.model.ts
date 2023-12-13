@@ -18,6 +18,7 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
    
   },
   {
+    // _id: false, // don't create mongoose _id in doc
     timestamps: true,
     toJSON: {
     //   virtuals: true,

@@ -14,7 +14,11 @@ const preRequisiteCoursesSchema = new Schema<TPreRequisiteCourses>(
         },
         
     },
-    {}
+    {
+        // _id: false, // don't create mongoose _id in doc
+        // timestamps: true,
+        // toJSON: {virtuals: true,},
+    }
 )
 
 const courseSchema = new Schema<TCourse>(
@@ -48,7 +52,11 @@ const courseSchema = new Schema<TCourse>(
             default: false,
         },
     },
-    {}
+    {
+        // _id: false, // don't create mongoose _id in doc
+        // timestamps: true,
+        // toJSON: {virtuals: true,},
+    }
 )
 
 
@@ -73,7 +81,11 @@ const courseFacultySchema = new Schema<TCourseFaculty>(
             ref: "Faculty"
         }],
     },
-    {}
+    {
+        // _id: false, // don't create mongoose _id in doc
+        // timestamps: true,
+        // toJSON: {virtuals: true,},
+    }
 )
 
 

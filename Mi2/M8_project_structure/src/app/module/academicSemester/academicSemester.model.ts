@@ -35,6 +35,7 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
     },
   },
   {
+    // _id: false, // don't create mongoose _id in doc
     timestamps: true,
     toJSON: {
       // virtuals: true

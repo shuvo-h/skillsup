@@ -83,11 +83,11 @@ const updateCourseIntoDB = async(id:string,payload:Partial<TCourse>) =>{
             }
         }
     
-        const result = await CourseModel.findById(id).populate('preRequisiteCourses.course');
-
+        
         await session.commitTransaction();
         await session.endSession();
         
+        const result = await CourseModel.findById(id).populate('preRequisiteCourses.course');
         return result;
     } catch (err) {
         await session.abortTransaction();
@@ -95,6 +95,7 @@ const updateCourseIntoDB = async(id:string,payload:Partial<TCourse>) =>{
         throw new AppError(httpStatus.BAD_REQUEST,'Failed to update courses');
     }
 }
+
 const deleteCourseFromDB = async(id:string,) =>{
     const result = await CourseModel.findByIdAndUpdate(
         id,

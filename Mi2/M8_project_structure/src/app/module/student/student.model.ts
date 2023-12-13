@@ -176,6 +176,8 @@ const studentSchema = new Schema<TStudent, StudentStaticModel>(
     },
   },
   {
+    // _id: false, // don't create mongoose _id in doc
+    // timestamps: true,
     toJSON: {
       virtuals: true,
     },
