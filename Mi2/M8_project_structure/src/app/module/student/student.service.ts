@@ -1,4 +1,3 @@
-
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
@@ -32,7 +31,7 @@ const createStudentIntoDB = async (student: TStudent) => {
   return result;
 };
 */
-const getAllStudentsFromDB = async (query:Record<string,unknown>) => {
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   // const result = await StudentModel.find({}).populate('admissionSemester  academicDepartment');
   /*
   const queryObj = {...query};
@@ -103,15 +102,18 @@ const getAllStudentsFromDB = async (query:Record<string,unknown>) => {
     {
       path: 'academicDepartment',
       populate: {
-        path: "academicFaculty"
-      }
+        path: 'academicFaculty',
+      },
     },
-    { path: "admissionSemester" },
-    { path: "user" },
+    { path: 'admissionSemester' },
+    { path: 'user' },
   ]);
-  const studentQuery = new QueryBuilder(studentBaseQuery,query)
-  .search(studentSearchableFields)
-  .filter().sort().paginate().fields();
+  const studentQuery = new QueryBuilder(studentBaseQuery, query)
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
   const result = await studentQuery.modelQuery;
   return result;
@@ -122,11 +124,11 @@ const getSingleStudentFromDB = async (id: string) => {
     {
       path: 'academicDepartment',
       populate: {
-        path: "academicFaculty"
-      }
+        path: 'academicFaculty',
+      },
     },
-    { path: "admissionSemester" },
-    { path: "user" },
+    { path: 'admissionSemester' },
+    { path: 'user' },
   ]);
   /*
   const result = await StudentModel.aggregate([
@@ -153,70 +155,78 @@ const getSingleStudentFromDB = async (id: string) => {
   */
   return result;
 };
-const updateSingleStudentIntoDB = async (id: string,payload:Partial<TStudent>) => {
-  const {name, guardian,localGuardian,...remainingStudentData} = payload;
-  const modifiedUpdatedData:Record<string,unknown> = {...remainingStudentData};
+const updateSingleStudentIntoDB = async (
+  id: string,
+  payload: Partial<TStudent>,
+) => {
+  const { name, guardian, localGuardian, ...remainingStudentData } = payload;
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remainingStudentData,
+  };
   if (name && Object.keys(name).length) {
-    for(const [key,value] of Object.entries(name)){
+    for (const [key, value] of Object.entries(name)) {
       modifiedUpdatedData[`name.${key}`] = value;
     }
   }
   if (guardian && Object.keys(guardian).length) {
-    for(const [key,value] of Object.entries(guardian)){
+    for (const [key, value] of Object.entries(guardian)) {
       modifiedUpdatedData[`guardian.${key}`] = value;
     }
   }
   if (localGuardian && Object.keys(localGuardian).length) {
-    for(const [key,value] of Object.entries(localGuardian)){
+    for (const [key, value] of Object.entries(localGuardian)) {
       modifiedUpdatedData[`localGuardian.${key}`] = value;
     }
   }
 
   const result = await StudentModel.findByIdAndUpdate(
     id,
-    {...modifiedUpdatedData},
-    {new: true, runValidators:true}
+    { ...modifiedUpdatedData },
+    { new: true, runValidators: true },
   );
-  
+
   return result;
 };
 const deleteSingleStudentFromDB = async (id: string) => {
   // never delete doc from DB in real projecr, it can create inconsistency in "ref"
-  // [transition_step: 1]: create session 
+  // [transition_step: 1]: create session
   const session = await mongoose.startSession();
-  
+
   try {
-    // [transition_step: 2]: start transection 
+    // [transition_step: 2]: start transection
     session.startTransaction();
 
     // [transition_step: 3.1]: change status a student(transection_1)
     const deletedStudent = await StudentModel.findByIdAndUpdate(
-      id , 
+      id,
       { isDeleted: true },
-      {session,new: true, runValidators:true}
-      );
-      if (!deletedStudent) {
-        throw new AppError(httpStatus.BAD_REQUEST,"Student not found");
-      }
-      // [transition_step: 3.2]: change status a user(transection_2)
-      const userId = deletedStudent.user;
-      const deletedUser = await UserModel.findByIdAndUpdate(
-        userId,
-      {isDeleted:true},
-      {session,new:true,runValidators:true},
+      { session, new: true, runValidators: true },
+    );
+    if (!deletedStudent) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Student not found');
+    }
+    // [transition_step: 3.2]: change status a user(transection_2)
+    const userId = deletedStudent.user;
+    const deletedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { session, new: true, runValidators: true },
     );
     if (!deletedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST,"User not found");
+      throw new AppError(httpStatus.BAD_REQUEST, 'User not found');
     }
     await session.commitTransaction();
     await session.endSession();
     return deletedStudent;
-  } catch (error ) {
-    // [transition_step: 6]: cancel the transection 
-    // [transition_step: 7]: end the session after aborting 
+  } catch (error) {
+    // [transition_step: 6]: cancel the transection
+    // [transition_step: 7]: end the session after aborting
     await session.abortTransaction();
     await session.endSession();
-    throw new AppError(500,(error as {message:string}).message || "Failed to delete user");
+    throw new AppError(
+      500,
+      (error as { message: string }).message || 'Failed to delete user',
+    );
   }
 };
 

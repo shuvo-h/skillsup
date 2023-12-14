@@ -1,4 +1,5 @@
-import express from 'express';import { validateRequest } from '../../middlewares/validateRequest';
+import express from 'express';
+import { validateRequest } from '../../middlewares/validateRequest';
 import { FacultyControllers } from './faculty.controller';
 import { updateFacultyValidationSchema } from './faculty.validation';
 

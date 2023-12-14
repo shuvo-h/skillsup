@@ -32,7 +32,6 @@ const createStudent = catchAsync(async (req, res): Promise<void> => {
   });
 });
 
-
 const createFaculty = catchAsync(async (req, res) => {
   const { password, faculty: facultyData } = req.body;
 

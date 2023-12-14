@@ -5,6 +5,7 @@ export const userZodValidationSchema = z.object({
   password: z
     .string({
       invalid_type_error: 'Password must be string',
+      required_error: 'Password is required',
     })
     .max(20, { message: 'maximim 20 characters allowed' })
     .optional(),

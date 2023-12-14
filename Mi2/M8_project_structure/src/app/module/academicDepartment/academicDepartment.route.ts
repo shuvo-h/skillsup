@@ -7,16 +7,22 @@ const router = express.Router();
 
 router.post(
   '/create-academic-department',
-  
+
   validateRequest(
     academicDepartmentZodValidation.createAcademicDepartmentValidationSchema,
   ),
-  
+
   AcademicDepartmentController.createAcademicDepartment,
 );
 router.get('/', AcademicDepartmentController.getAllAcademicDepartment);
-router.get('/:departmentId', AcademicDepartmentController.getSingleAcademicDepartment);
-router.patch(  '/:departmentId',  validateRequest(    academicDepartmentZodValidation.updateAcademicDepartmentValidationSchema,
+router.get(
+  '/:departmentId',
+  AcademicDepartmentController.getSingleAcademicDepartment,
+);
+router.patch(
+  '/:departmentId',
+  validateRequest(
+    academicDepartmentZodValidation.updateAcademicDepartmentValidationSchema,
   ),
   AcademicDepartmentController.updateAcademicDepartment,
 );

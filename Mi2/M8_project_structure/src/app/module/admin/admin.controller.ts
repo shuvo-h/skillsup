@@ -3,7 +3,6 @@ import { catchAsync } from '../../utils/catchAsync';
 import { sendRes } from '../../utils/sendRes';
 import { AdminServices } from './admin.service';
 
-
 const getSingleAdmin = catchAsync(async (req, res) => {
   const { adminId } = req.params;
   const result = await AdminServices.getSingleAdminFromDB(adminId);

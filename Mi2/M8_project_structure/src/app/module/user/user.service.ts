@@ -4,7 +4,11 @@ import { env } from '../../config/config';
 import { TStudent } from '../student/student.interface';
 import { TUser } from './user.interface';
 import { UserModel } from './user.model';
-import { generateAdminId, generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import mongoose from 'mongoose';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
@@ -44,65 +48,60 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
 
   // set user role as student
   userData.role = 'student';
-  
 
   // auto generate id
- 
-  // find academic semester info 
-  const admissionSemester = await AcademicSemesterModel.findById(studentData.admissionSemester);
 
-
+  // find academic semester info
+  const admissionSemester = await AcademicSemesterModel.findById(
+    studentData.admissionSemester,
+  );
 
   // use transecction when operation in two database to keep data consistency when get any error
-  // [transition_step: 1]: create session 
+  // [transition_step: 1]: create session
   const session = await mongoose.startSession();
-  
-  
+
   try {
-    // [transition_step: 2]: start transection 
+    // [transition_step: 2]: start transection
     session.startTransaction();
     if (admissionSemester) {
       userData.id = await generateStudentId(admissionSemester);
     }
-    
-    
-    
+
     // [transition_step: 3.1]: create a user(transection_1)
-    const newUser = await UserModel.create([userData],{session});  // session receive data as array, and also return data in array
-  
-    
+    const newUser = await UserModel.create([userData], { session }); // session receive data as array, and also return data in array
+
     if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST,'Failed to create user');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
     }
 
     // set id, _id as user
     studentData.id = newUser[0].id; // embeding id for query
     studentData.user = newUser[0]._id; // reference ID for populate
-    
+
     // [transition_step: 3.2]: create a student(transection_2)
-    const newStudent = await StudentModel.create([studentData],{session});
+    const newStudent = await StudentModel.create([studentData], { session });
     if (!newStudent.length) {
-      throw new AppError(httpStatus.BAD_REQUEST,'Failed to create student');
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
     }
     // [transition_step: 4]: commit the transection to save modified data to database
     await session.commitTransaction();
     // [transition_step: 5]: end the session after commiting to DB
     await session.endSession();
-    
+
     return newStudent;
-    
   } catch (error) {
     // console.log(error);
-    
-    // [transition_step: 6]: cancel the transection 
+
+    // [transition_step: 6]: cancel the transection
     await session.abortTransaction();
-    // [transition_step: 7]: end the session after aborting 
-        await session.endSession();
-        throw new AppError(500,(error as {message:string}).message || "Failed to create student");
+    // [transition_step: 7]: end the session after aborting
+    await session.endSession();
+    throw new AppError(
+      500,
+      (error as { message: string }).message || 'Failed to create student',
+    );
   }
-
 };
-
 
 const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   // create a user object
@@ -153,7 +152,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     await session.endSession();
 
     return newFaculty;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
@@ -179,7 +178,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     userData.id = await generateAdminId();
 
     // create a user (transaction-1)
-    const newUser = await UserModel.create([userData], { session }); 
+    const newUser = await UserModel.create([userData], { session });
 
     //create a admin
     if (!newUser.length) {
@@ -200,7 +199,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     await session.endSession();
 
     return newAdmin;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
@@ -208,10 +207,8 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
-
 export const UserService = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
 };
-

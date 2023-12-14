@@ -4,7 +4,6 @@ import cors from 'cors';
 import { globalErrorHandler } from './app/middlewares/globalErrhandler';
 import { notFound } from './app/middlewares/notFound';
 import { PrimaryRouter } from './app/route';
-import { RouterVersionTwo } from './app/v2/route/routeTwo';
 
 export const app: Application = express();
 
@@ -14,20 +13,18 @@ app.use(cors());
 
 // application routes
 app.use('/api/v1', PrimaryRouter);
-app.use('/api/v2', RouterVersionTwo);
+// app.use('/api/v2', RouterVersionTwo);
 
 app.get('/', (req: Request, res: Response) => {
   const a = 10;
   res.send(a);
 });
 
-app.get("/a",(req,res)=>{
-  res.send("Hello Schedule");
-})
+app.get('/a', (req, res) => {
+  res.send('Hello Schedule');
+});
 // global error
 app.use(globalErrorHandler);
 
 // Not Found router
 app.use(notFound);
-
-

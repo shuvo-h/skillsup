@@ -25,7 +25,7 @@ const userNameSchema = new Schema<TUserName>(
     // _id: false, // don't create mongoose _id in doc
     // timestamps: true,
     // toJSON: {virtuals: true,},
-  }
+  },
 );
 
 const adminSchema = new Schema<TAdmin, AdminModel>(
@@ -91,7 +91,7 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
   },
   {
     // _id: false, // don't create mongoose _id in doc
-    toJSON: {virtuals: true,},
+    toJSON: { virtuals: true },
   },
 );
 

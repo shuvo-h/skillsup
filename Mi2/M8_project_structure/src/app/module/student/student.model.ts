@@ -162,9 +162,9 @@ const studentSchema = new Schema<TStudent, StudentStaticModel>(
       type: String,
       required: [true, 'Profile image is required'],
     },
-    admissionSemester:{
+    admissionSemester: {
       type: Schema.Types.ObjectId,
-      ref: "AcademicSemester",
+      ref: 'AcademicSemester',
     },
     academicDepartment: {
       type: Schema.Types.ObjectId,
@@ -268,5 +268,3 @@ export const StudentModel = model<TStudent, StudentStaticModel>(
 // post-findone middleware   'findone'
 // pre-aggregate middleware   'aggregate'
 // post-aggregate middleware   'aggregate'
-
-

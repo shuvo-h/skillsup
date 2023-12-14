@@ -1,6 +1,5 @@
-import { model, Schema } from "mongoose";
-import { TAcademicFaculty } from "./academicFaculty.interface";
-
+import { model, Schema } from 'mongoose';
+import { TAcademicFaculty } from './academicFaculty.interface';
 
 const academicFacultySchema = new Schema<TAcademicFaculty>(
   {
@@ -9,16 +8,17 @@ const academicFacultySchema = new Schema<TAcademicFaculty>(
       required: true,
       unique: true,
     },
-   
   },
   {
     // _id: false, // don't create mongoose _id in doc
     timestamps: true,
     toJSON: {
-    //   virtuals: true,
+      //   virtuals: true,
     },
   },
 );
 
-
-export const AcademicFacultyModel = model<TAcademicFaculty>('AcademicFaculty', academicFacultySchema);
+export const AcademicFacultyModel = model<TAcademicFaculty>(
+  'AcademicFaculty',
+  academicFacultySchema,
+);

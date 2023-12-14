@@ -1,9 +1,9 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import { app } from './app';
 import { env } from './app/config/config';
-import {Server} from 'http';
+import { Server } from 'http';
 
-let server:Server;
+let server: Server;
 
 async function main() {
   try {
@@ -25,21 +25,19 @@ async function main() {
 
 main();
 
-
-// listen event for unhandle exception error or unhandle rejection error, then shutdown the server 
+// listen event for unhandle exception error or unhandle rejection error, then shutdown the server
 // handle unhandleRejection error
-process.on('unhandledRejection',()=>{
+process.on('unhandledRejection', () => {
   // console.log(`😈 UnhandleRejection is detected, shutting down....`);
   if (server) {
-    server.close(()=>{
+    server.close(() => {
       process.exit(1);
-    })
+    });
   }
   process.exit(1);
-})
+});
 // handle uncaughtException error
-process.on('uncaughtException',()=>{
+process.on('uncaughtException', () => {
   console.log(`😈 uncaughtException is detected, shutting down....`);
   process.exit(1);
-})
-
+});

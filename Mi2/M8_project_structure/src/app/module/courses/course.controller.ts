@@ -14,7 +14,7 @@ const createCourse = catchAsync(async (req, res) => {
   });
 });
 const getSingleCourse = catchAsync(async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   const result = await courseServuces.getSingleCourseFromDB(id);
 
   sendRes(res, {
@@ -38,7 +38,7 @@ const getAllCourses = catchAsync(async (req, res) => {
 
 const updateCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
-  
+
   const result = await courseServuces.updateCourseIntoDB(id, req.body);
 
   sendRes(res, {
@@ -64,7 +64,10 @@ const deleteCourse = catchAsync(async (req, res) => {
 const assignFacultiesWithCourse = catchAsync(async (req, res) => {
   const { courseId } = req.params;
   const { faculties } = req.body;
-  const result = await courseServuces.assignFacultiesWithCourseIntoDB(courseId,faculties);
+  const result = await courseServuces.assignFacultiesWithCourseIntoDB(
+    courseId,
+    faculties,
+  );
 
   sendRes(res, {
     statusCode: httpStatus.OK,
@@ -77,7 +80,10 @@ const assignFacultiesWithCourse = catchAsync(async (req, res) => {
 const removeFacultiesFromCourse = catchAsync(async (req, res) => {
   const { courseId } = req.params;
   const { faculties } = req.body;
-  const result = await courseServuces.removeFacultiesWithCourseFromDB(courseId,faculties);
+  const result = await courseServuces.removeFacultiesWithCourseFromDB(
+    courseId,
+    faculties,
+  );
 
   sendRes(res, {
     statusCode: httpStatus.OK,
@@ -88,10 +94,10 @@ const removeFacultiesFromCourse = catchAsync(async (req, res) => {
 });
 
 export const CourseControllers = {
-    createCourse,
-    getSingleCourse,
-    getAllCourses,
-    deleteCourse,
+  createCourse,
+  getSingleCourse,
+  getAllCourses,
+  deleteCourse,
   updateCourse,
   assignFacultiesWithCourse,
   removeFacultiesFromCourse,
