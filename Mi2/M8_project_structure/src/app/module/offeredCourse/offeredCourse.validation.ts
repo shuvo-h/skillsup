@@ -1,6 +1,17 @@
 import { z } from 'zod';
 import { DAYS } from './offeredCourse.constant';
 
+const timeStringSchema = z
+.string({
+  invalid_type_error: 'Invalid type for startTime. Expecting a string',
+  required_error: 'startTime is required',
+})
+.refine((value) => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
+  message: 'Invalid startTime format. Use HH:mm',
+})
+
+
+
 const createOfferCourseValidationSchema = z.object({
   body: z
     .object({
@@ -77,23 +88,9 @@ const createOfferCourseValidationSchema = z.object({
         }),
       ),
 
-      startTime: z
-        .string({
-          invalid_type_error: 'Invalid type for startTime. Expecting a string',
-          required_error: 'startTime is required',
-        })
-        .refine((value) => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-          message: 'Invalid startTime format. Use HH:mm',
-        }),
+      startTime: timeStringSchema,
 
-      endTime: z
-        .string({
-          invalid_type_error: 'Invalid type for endTime. Expecting a string',
-          required_error: 'endTime is required',
-        })
-        .refine((value) => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-          message: 'Invalid endTime format. Use HH:mm',
-        }),
+      endTime: timeStringSchema,
     })
     .refine(
       (value) => {
@@ -114,8 +111,7 @@ const updateOfferCourseValidationSchema = z.object({
       })
       .refine((value) => /^[a-f\d]{24}$/i.test(value), {
         message: 'Invalid ObjectId for faculty',
-      })
-      .optional(),
+      }),
 
     maxCapacity: z
       .number({
@@ -123,7 +119,7 @@ const updateOfferCourseValidationSchema = z.object({
         required_error: 'maxCapacity is required',
       })
       .min(0, { message: 'maxCapacity must be a non-negative number' })
-      .optional(),
+      ,
 
     days: z
       .array(
@@ -134,28 +130,19 @@ const updateOfferCourseValidationSchema = z.object({
           required_error: 'days is required',
         }),
       )
-      .optional(),
+      ,
 
-    startTime: z
-      .string({
-        invalid_type_error: 'Invalid type for startTime. Expecting a string',
-        required_error: 'startTime is required',
-      })
-      .refine((value) => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-        message: 'Invalid startTime format. Use HH:mm',
-      })
-      .optional(),
+    startTime: timeStringSchema,
 
-    endTime: z
-      .string({
-        invalid_type_error: 'Invalid type for endTime. Expecting a string',
-        required_error: 'endTime is required',
-      })
-      .refine((value) => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-        message: 'Invalid endTime format. Use HH:mm',
-      })
-      .optional(),
-  }),
+    endTime: timeStringSchema,
+  }).refine(
+    (value) => {
+      const start = new Date(`1970-01-01T${value.startTime}:00`);
+      const end = new Date(`1970-01-01T${value.endTime}:00`);
+      return end > start;
+    },
+    { message: "Start time can't be after end time" },
+  ),
 });
 
 export const OfferedCourseValidations = {

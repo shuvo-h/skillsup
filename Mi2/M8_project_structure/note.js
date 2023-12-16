@@ -61,14 +61,43 @@
     Partial:    take a type and make all of it's property optional. eg. type TOptionalUser = Partial<TUser>;
     Readonly:   take a type and make all of it's property fixed and un-editable. eg. type TOptionalUser = Readonly<TUser>;      // You can not re-assign any property's value of the object
     Record:     take two generic value where first one is for keyName and secondOne is the value type. So we can add new property and value always. eg, type TEmptyObj = Record<string,unknown>; It means, the object will take the property in string type and the value of the property is unknown type
+    _________________________________________________________________________________________________
+
 
 
 
 
 
     **** OOP Short note:
+    - OOP access modifiers:
+    .) readonly         : can not change the value from anywhere either public or private 
+        .) public       : can access from anywhere
+        .) private      : can't access outside of this instance, but can only indise it's own methods. for private properties, use "underscore" naming convention like readonly public _id, readonly private _password, protected _balance
+        .) protected    : can't access publicly, but can access only from itself own and it's instances. but not from public.
+        .) static       : memory doesn't change of the property. DOes,'t matter how many instance are you creating but the static property value will always be same for all the instance. you can't use 'this' to call static property or static methods. have to use the className to access the static property(for both outside & inside). 
+    parameter properties in OOP constructor: Don't need to declare the variable, the use of modifiers in constructor with paramerer nam will do it. class Animal {constroctor(public age:number){}} 
+    inheritance: create a new child class by extending a parent class. class catOne extends Animal{constroctor(){super()}} 
+   
+    Type Gaurds:
+    typeof          : to check the type of a variable
+    in              : chak if a propertu exist in a object. TUser = {name:string}; TAdmin = {name:string,role:['admin']}, const isAdmin=(data:YUser|TAdmin)=>{if('role' in data){return true}}
+    instanceof      : check if any property of object is an instance of any class or not. class Animalclass{public age:number; constructor(){}} const getAge =(cat) =>{if(cat instance of Animalclass){}}
+    is              : to specify a new value which type it will use. const isCat =(data:Animalclass):data is Catclass=>{if(data instanceof Animalclass)}
+    
+    Getters and Setters:
+    get             : use get before a method will allow to set the value by custom modify and also allow to access the it like a property not method. class Animal{private _balance:number; constructor(){}; get seeBalance(){return this._balance}  now you can access like console.log(AnimalInstance.seeBalance);
+    set             : set addBalance(amount:number){this._balance += amount;}};  add amount use as property, AnimalInstance.addBalance = 50;
+
+    polimorphism    : use same methodName in multiple inheritance classes but with diferent logic. during calling the method name will be same but based on the call, the result will different. chass Shape{area:number;constroctor(){}}; class Triangle extends Shape{constroctor(){} calculateArea(width,height){return 1/2*width*height}}; class Rectangle extends Shape{constroctor(){} calculateArea(width,height){return width*height}}; // Here calculateArea() will work like polimorhism. the same method name will work differently on different istance
+    encapsulation   : It is the use of 'private' & 'protected' so that outside of the class and childs, the property/methods are not accessiable
+    abstruction     : 2 ways for abstruction. (i) using interface implements, (ii) using abstruct keyword. Keep complex logic inside the method and allow user to provide only params value. 
+                        (i) interface implements: inteface VehicleInterface {startEngineFn():void,model:string}; class CarClass implements  VehicleInterface{model:string; constructor(){} startEngineFn(){console.log("details to start the engine")}}; // Here startEngineFn hold the complex logic of start the car but from interface type, you can get idea what would be the result(start engine), but don't know the full logic of it(which will be described in class, not interface). Here interface works as a Type of the cass to implement, but the class can also take more property outside of the interface. 
+                        (ii) abstruct class: It is the Leader/Ideal class that the rest of the class should follow this abstruct class. Similar as Type. abstruct class can NOT create any instance but you can extends the class. eg, abstruct class Vehicle{constructor(){} abstruct startEngine():void}; class Car extends Vehicle{constructor(){super();} startEngine(){console.log('comples logic to start engine in this extends class. The abstruct class only contain the method name..')}} 
+
+
     **** Node.js Short note:
     **** mongoDB Short note:
+        - Replication & sharding: scaling DB for performance
     **** Redux Short note:
     **** RDBMS Short note:
     **** Prisma Short note:

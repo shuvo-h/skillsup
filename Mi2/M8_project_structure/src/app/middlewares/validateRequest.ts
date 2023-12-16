@@ -1,6 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import { AnyZodObject } from 'zod';
+import { catchAsync } from '../utils/catchAsync';
 
+export const validateRequest = (zodDataSchema: AnyZodObject) => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    await zodDataSchema.parseAsync({ body: req.body });
+    next();
+});
+};
+
+/*
 export const validateRequest = (zodDataSchema: AnyZodObject) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -12,3 +21,4 @@ export const validateRequest = (zodDataSchema: AnyZodObject) => {
     }
   };
 };
+*/

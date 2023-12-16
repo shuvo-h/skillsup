@@ -140,22 +140,52 @@ const deleteOfferCourseFromDB = async (id: string) => {
 
 const updateOfferCourseIntoDB = async (
   id: string,
-  payload: Partial<TOfferedCourse>,
+  payload: Pick<TOfferedCourse, 'faculty'|'days'|'startTime'|'endTime'>,
 ) => {
+  const {faculty,days,startTime,endTime} = payload;
   const isOfferedCourseExist = await OfferedCourseModel.findById(id);
   if (!isOfferedCourseExist) {
     throw new AppError(httpStatus.NOT_FOUND, `Offered course  not found`);
   }
 
+  const isFacultyExist = await Faculty.findById(faculty);
+  if (!isFacultyExist) {
+    throw new AppError(httpStatus.NOT_FOUND, `Faculty does not found`);
+  }
+
+  const semesterRegistration = isOfferedCourseExist.semesterRegistration
+  // check: schedule conflit of the faculty
+  const assignedSchedules = await OfferedCourseModel.find({
+    semesterRegistration,
+    faculty,
+    days: { $in: days },
+  }).select('days startTime endTime');
+
+  const newSchedule = {
+    days,
+    startTime,
+    endTime,
+  };
+
+  const isTimeConflict = hasTimeConflict(assignedSchedules, newSchedule);
+  if (isTimeConflict) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      `This faculty is not available. Please choose other time or day`,
+    );
+  }
+
+  
   const semesterREgfistrationStatus = await SemesterRegistrationModel.findById(
     isOfferedCourseExist.semesterRegistration,
   ).select('status');
   if (semesterREgfistrationStatus?.status !== 'UPCOMMING') {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      `Offered Course update timeline ended`,
+      `Offered Course is not UPCOMMING`,
     );
   }
+  
 
   const result = await OfferedCourseModel.findByIdAndUpdate(id, payload, {
     new: true,

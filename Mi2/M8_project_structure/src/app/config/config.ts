@@ -18,4 +18,5 @@ export const env = {
   DB_URL: process.env.MONGO_URL,
   BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS,
   default_password: process.env.DEFAULT_PASSWORD,
+  jwt_access_secret: process.env.JWT_ACCESS_SECRET,  // console.log(require("crypto").randomBytes(32).toString('hex'));
 };
