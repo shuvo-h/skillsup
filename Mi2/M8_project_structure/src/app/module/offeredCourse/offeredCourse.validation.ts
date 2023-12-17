@@ -2,15 +2,13 @@ import { z } from 'zod';
 import { DAYS } from './offeredCourse.constant';
 
 const timeStringSchema = z
-.string({
-  invalid_type_error: 'Invalid type for startTime. Expecting a string',
-  required_error: 'startTime is required',
-})
-.refine((value) => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
-  message: 'Invalid startTime format. Use HH:mm',
-})
-
-
+  .string({
+    invalid_type_error: 'Invalid type for startTime. Expecting a string',
+    required_error: 'startTime is required',
+  })
+  .refine((value) => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(value), {
+    message: 'Invalid startTime format. Use HH:mm',
+  });
 
 const createOfferCourseValidationSchema = z.object({
   body: z
@@ -103,46 +101,44 @@ const createOfferCourseValidationSchema = z.object({
 });
 
 const updateOfferCourseValidationSchema = z.object({
-  body: z.object({
-    faculty: z
-      .string({
-        invalid_type_error: 'Invalid type for faculty. Expecting a string',
-        required_error: 'faculty is required',
-      })
-      .refine((value) => /^[a-f\d]{24}$/i.test(value), {
-        message: 'Invalid ObjectId for faculty',
-      }),
+  body: z
+    .object({
+      faculty: z
+        .string({
+          invalid_type_error: 'Invalid type for faculty. Expecting a string',
+          required_error: 'faculty is required',
+        })
+        .refine((value) => /^[a-f\d]{24}$/i.test(value), {
+          message: 'Invalid ObjectId for faculty',
+        }),
 
-    maxCapacity: z
-      .number({
-        invalid_type_error: 'Invalid type for maxCapacity. Expecting a number',
-        required_error: 'maxCapacity is required',
-      })
-      .min(0, { message: 'maxCapacity must be a non-negative number' })
-      ,
-
-    days: z
-      .array(
+      maxCapacity: z
+        .number({
+          invalid_type_error:
+            'Invalid type for maxCapacity. Expecting a number',
+          required_error: 'maxCapacity is required',
+        })
+        .min(0, { message: 'maxCapacity must be a non-negative number' }),
+      days: z.array(
         z.enum([...DAYS] as [string, ...string[]], {
           invalid_type_error: `Invalid type for days. Expecting one of: ${DAYS.join(
             ', ',
           )}`,
           required_error: 'days is required',
         }),
-      )
-      ,
+      ),
+      startTime: timeStringSchema,
 
-    startTime: timeStringSchema,
-
-    endTime: timeStringSchema,
-  }).refine(
-    (value) => {
-      const start = new Date(`1970-01-01T${value.startTime}:00`);
-      const end = new Date(`1970-01-01T${value.endTime}:00`);
-      return end > start;
-    },
-    { message: "Start time can't be after end time" },
-  ),
+      endTime: timeStringSchema,
+    })
+    .refine(
+      (value) => {
+        const start = new Date(`1970-01-01T${value.startTime}:00`);
+        const end = new Date(`1970-01-01T${value.endTime}:00`);
+        return end > start;
+      },
+      { message: "Start time can't be after end time" },
+    ),
 });
 
 export const OfferedCourseValidations = {

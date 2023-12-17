@@ -3,7 +3,7 @@ import { TUser, TUserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import { env } from '../../config/config';
 
-const userSchema = new Schema<TUser,TUserModel>(
+const userSchema = new Schema<TUser, TUserModel>(
   {
     id: {
       type: String,
@@ -20,7 +20,8 @@ const userSchema = new Schema<TUser,TUserModel>(
       required: true,
       default: true,
     },
-    passwordChangedAt: { // optional
+    passwordChangedAt: {
+      // optional
       type: Date,
     },
     role: {
@@ -63,12 +64,23 @@ userSchema.post('save', function (doc, next) {
 });
 
 // staqtic methods
-userSchema.statics.isUserExistByCustomId = async function(id:string){
-  const user = await UserModel.findOne({id});
+userSchema.statics.isUserExistByCustomId = async function (id: string) {
+  const user = await UserModel.findOne({ id });
   return user;
-}
-userSchema.statics.isPasswordMatched = async function(plain_password:string,hash_password:string){
-  const isMatched = await bcrypt.compare(plain_password,hash_password);
+};
+userSchema.statics.isPasswordMatched = async function (
+  plain_password: string,
+  hash_password: string,
+) {
+  const isMatched = await bcrypt.compare(plain_password, hash_password);
   return isMatched;
-}
-export const UserModel = model<TUser,TUserModel>('User', userSchema);
+};
+userSchema.statics.isJwtIssuedBeforePasswordChanged = function (
+  passwordChangedTimestamp: Date,
+  jwtIssuedTimestamp: number,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimestamp).getTime() / 1000;
+  return passwordChangedTime > jwtIssuedTimestamp;
+};
+export const UserModel = model<TUser, TUserModel>('User', userSchema);

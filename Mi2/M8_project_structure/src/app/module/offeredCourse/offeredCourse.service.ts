@@ -140,9 +140,9 @@ const deleteOfferCourseFromDB = async (id: string) => {
 
 const updateOfferCourseIntoDB = async (
   id: string,
-  payload: Pick<TOfferedCourse, 'faculty'|'days'|'startTime'|'endTime'>,
+  payload: Pick<TOfferedCourse, 'faculty' | 'days' | 'startTime' | 'endTime'>,
 ) => {
-  const {faculty,days,startTime,endTime} = payload;
+  const { faculty, days, startTime, endTime } = payload;
   const isOfferedCourseExist = await OfferedCourseModel.findById(id);
   if (!isOfferedCourseExist) {
     throw new AppError(httpStatus.NOT_FOUND, `Offered course  not found`);
@@ -153,7 +153,7 @@ const updateOfferCourseIntoDB = async (
     throw new AppError(httpStatus.NOT_FOUND, `Faculty does not found`);
   }
 
-  const semesterRegistration = isOfferedCourseExist.semesterRegistration
+  const semesterRegistration = isOfferedCourseExist.semesterRegistration;
   // check: schedule conflit of the faculty
   const assignedSchedules = await OfferedCourseModel.find({
     semesterRegistration,
@@ -175,7 +175,6 @@ const updateOfferCourseIntoDB = async (
     );
   }
 
-  
   const semesterREgfistrationStatus = await SemesterRegistrationModel.findById(
     isOfferedCourseExist.semesterRegistration,
   ).select('status');
@@ -185,7 +184,6 @@ const updateOfferCourseIntoDB = async (
       `Offered Course is not UPCOMMING`,
     );
   }
-  
 
   const result = await OfferedCourseModel.findByIdAndUpdate(id, payload, {
     new: true,

@@ -6,7 +6,7 @@ export const validateRequest = (zodDataSchema: AnyZodObject) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     await zodDataSchema.parseAsync({ body: req.body });
     next();
-});
+  });
 };
 
 /*
