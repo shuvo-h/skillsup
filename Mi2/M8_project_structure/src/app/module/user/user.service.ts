@@ -16,8 +16,14 @@ import { TFaculty } from '../faculty/faculty.interface';
 import { AcademicDepartmentModel } from '../academicDepartment/academicDepartment.model';
 import { Faculty } from '../faculty/faculty.model';
 import { Admin } from '../admin/admin.model';
+import { USER_ROLE } from './user.constant';
+import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary';
 
-const createStudentIntoDB = async (password: string, studentData: TStudent) => {
+const createStudentIntoDB = async (
+  password: string,
+  studentData: TStudent,
+  multerProfileImg: any,
+) => {
   /*
     // [OOP 1]: built-in static method .create()
     const isStudentExist = await StudentModel.isUserExistByStaticMethod(
@@ -48,6 +54,7 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
 
   // set user role as student
   userData.role = 'student';
+  userData.email = studentData.email;
 
   // auto generate id
 
@@ -67,6 +74,17 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
       userData.id = await generateStudentId(admissionSemester);
     }
 
+    // upload profile image to cloudinary
+    const imgName = `${userData.id}-${studentData.name.firstName}`;
+    const imgMulterFilePath = multerProfileImg.path;
+    const { secure_url } = await uploadImgToCloudinary(
+      imgName,
+      imgMulterFilePath,
+    );
+    if (!secure_url) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to upload image');
+    }
+
     // [transition_step: 3.1]: create a user(transection_1)
     const newUser = await UserModel.create([userData], { session }); // session receive data as array, and also return data in array
 
@@ -77,6 +95,7 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
     // set id, _id as user
     studentData.id = newUser[0].id; // embeding id for query
     studentData.user = newUser[0]._id; // reference ID for populate
+    studentData.profileImg = secure_url; // profile image frpm cloudinary
 
     // [transition_step: 3.2]: create a student(transection_2)
     const newStudent = await StudentModel.create([studentData], { session });
@@ -112,6 +131,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 
   //set student role
   userData.role = 'faculty';
+  userData.email = payload.email;
 
   // find academic department info
   const academicDepartment = await AcademicDepartmentModel.findById(
@@ -169,6 +189,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
 
   //set student role
   userData.role = 'admin';
+  userData.email = payload.email;
 
   const session = await mongoose.startSession();
 
@@ -207,8 +228,36 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
+const getMe = async (userId: string, role: string) => {
+  let result = null;
+  if (role === USER_ROLE.student) {
+    result = await StudentModel.findOne({ id: userId }).populate('user');
+  } else if (role === USER_ROLE.admin) {
+    result = await Admin.findOne({ id: userId }).populate('user');
+  } else if (role === USER_ROLE.faculty) {
+    result = await Faculty.findOne({ id: userId }).populate('user');
+  }
+
+  // const result = await
+  return result;
+};
+const changeStatusIntoDb = async (id: string, payload: { status: string }) => {
+  const result = await UserModel.findByIdAndUpdate(
+    id,
+    {
+      status: payload.status,
+    },
+    { new: true, runValidators: true, upsert: false },
+  );
+
+  // const result = await
+  return result;
+};
+
 export const UserService = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
+  getMe,
+  changeStatusIntoDb,
 };

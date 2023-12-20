@@ -22,3 +22,13 @@ authRouter.post(
   validateRequest(AuthValidation.refreshTokenValidationSchema),
   AuthControllers.createRefreshToken,
 );
+authRouter.post(
+  '/forget-password',
+  validateRequest(AuthValidation.forgetPasswordValidationSchema),
+  AuthControllers.forgetPassword,
+);
+authRouter.post(
+  '/reset-password',
+  validateRequest(AuthValidation.resetPasswordValidationSchema),
+  AuthControllers.resetPassword,
+);

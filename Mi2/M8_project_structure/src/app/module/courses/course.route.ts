@@ -13,7 +13,11 @@ router.post(
   validateRequest(courseValidations.createCourseValidationSchema),
   CourseControllers.createCourse,
 );
-router.get('/:id', authCheck(USER_ROLE.admin,USER_ROLE.faculty,USER_ROLE.student),CourseControllers.getSingleCourse);
+router.get(
+  '/:id',
+  authCheck(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  CourseControllers.getSingleCourse,
+);
 
 router.patch(
   '/:id',
@@ -33,7 +37,11 @@ router.delete(
   CourseControllers.removeFacultiesFromCourse,
 );
 
-router.delete('/:id',authCheck(USER_ROLE.admin), CourseControllers.deleteCourse);
+router.delete(
+  '/:id',
+  authCheck(USER_ROLE.admin),
+  CourseControllers.deleteCourse,
+);
 
 router.get('/', CourseControllers.getAllCourses);
 

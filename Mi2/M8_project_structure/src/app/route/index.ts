@@ -10,6 +10,7 @@ import { offeredCourseRouter } from '../module/offeredCourse/offeredCourse.route
 import { semesterReegistrationRouter } from '../module/semesterRegistration/semesterRegistration.route';
 import { StudentRoute } from '../module/student/student.route';
 import { userRouter } from '../module/user/user.route';
+import { testRouter } from '../module/queryTest/testModels/testRouter';
 
 export const PrimaryRouter = express.Router();
 
@@ -31,6 +32,7 @@ const moduleRoutes = [
   { path: '/academic-departments', route: AcademicDepartmentRoute },
   { path: '/semester-registrations', route: semesterReegistrationRouter },
   { path: '/offered-courses', route: offeredCourseRouter },
+  { path: '/test', route: testRouter },
 ];
 
 moduleRoutes.forEach((routerEl) =>

@@ -6,7 +6,7 @@ import { catchAsync } from '../../utils/catchAsync';
 
 const createStudent = catchAsync(async (req, res): Promise<void> => {
   const { password, student } = req.body;
-
+  const profileImgFile = req.file;
   // zod validation
   //   const zodParsedData = studentZodValidationSchema.parse(student);
 
@@ -23,7 +23,11 @@ const createStudent = catchAsync(async (req, res): Promise<void> => {
   //   }
 
   // const result = await studentService.createStudentIntoDB(joiStudent);
-  const result = await UserService.createStudentIntoDB(password, student);
+  const result = await UserService.createStudentIntoDB(
+    password,
+    student,
+    profileImgFile,
+  );
   sendRes(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -57,9 +61,35 @@ const createAdmin = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getMe = catchAsync(async (req, res) => {
+  const { userId, role } = req.user;
+
+  const result = await UserService.getMe(userId, role);
+
+  sendRes(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User is retrived succesfully',
+    data: result,
+  });
+});
+const changeStatus = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await UserService.changeStatusIntoDb(id, req.body);
+
+  sendRes(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Status is updated succesfully',
+    data: result,
+  });
+});
 
 export const UserController = {
   createStudent,
   createFaculty,
   createAdmin,
+  getMe,
+  changeStatus,
 };

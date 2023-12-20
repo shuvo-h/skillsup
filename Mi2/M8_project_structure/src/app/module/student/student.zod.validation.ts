@@ -64,7 +64,8 @@ export const createStudentZodValidationSchema = z.object({
       password: z
         .string()
         .min(1, { message: 'Passwordt be at least 1 characters long' })
-        .max(20, { message: 'password maximum 20 characters allowed' }),
+        .max(20, { message: 'password maximum 20 characters allowed' })
+        .optional(),
       student: z.object({
         name: userNameZodValidationSchema,
         email: z.string().email({ message: 'Invalid email format' }),
@@ -93,9 +94,8 @@ export const createStudentZodValidationSchema = z.object({
         guardian: guardianZodValidationSchema,
         localGuardian: localGuardianZodValidationSchema,
         admissionSemester: z.string(),
-        profileImg: z.string().min(2, {
-          message: 'Profile image URL must be at least 2 characters long',
-        }),
+        // profileImg: z.string(), // handled by multer
+        academicDepartment: z.string(),
       }),
     })
     .refine(

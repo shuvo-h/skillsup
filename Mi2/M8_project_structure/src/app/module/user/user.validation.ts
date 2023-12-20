@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { UserStatusList } from './user.constant';
 
-export const userZodValidationSchema = z.object({
+const userZodValidationSchema = z.object({
   // id: z.string(), // auto generated
   password: z
     .string({
@@ -14,3 +15,13 @@ export const userZodValidationSchema = z.object({
   // status: z.enum(['in-progress', 'blocked']).default('in-progress'),   // will be set from endpoint controller
   // isDeleted: z.boolean().optional().default(false)     // will be set from model
 });
+const changeStatusValidationSchema = z.object({
+  body: z.object({
+    status: z.enum([...UserStatusList] as [string, ...string[]]),
+  }),
+});
+
+export const userValidations = {
+  userZodValidationSchema,
+  changeStatusValidationSchema,
+};
