@@ -99,10 +99,8 @@ const surgeries = [
   
   Certainly! Here's a list of 50 complex MongoDB queries based on the provided collections:
 
-1. Retrieve the personal information of the patient with ID "A123456789."
+  
 2. Find all patients who have been diagnosed with hypertension.
-3. Get the details of the insurance coverage for the patient with policy number "HG987654321."
-4. Find patients who have undergone surgery at "City Medical Center."
 5. Retrieve the names of patients who have been prescribed "Insulin."
 6. Find patients with a genetic variant in the "BRCA1" gene with a mutation impact of "High."
 7. Get a list of patients who participated in the clinical trial with ID "CT1001."

@@ -11,3 +11,4 @@ testRouter.post('/surgery/create', surgeryControllers.createSetgery);
 testRouter.post('/treatment/create', treatmentControllers.createTreatment);
 testRouter.post('/conditions/create', conditionControllers.createCondition);
 testRouter.post('/patients/create', patientControllers.createPatient);
+testRouter.get('/patients', patientControllers.queryTesting);

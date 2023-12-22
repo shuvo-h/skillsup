@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserStatusList } from './user.constant';
+import { UserStatus } from './user.constant';
 
 const userZodValidationSchema = z.object({
   // id: z.string(), // auto generated
@@ -17,7 +17,7 @@ const userZodValidationSchema = z.object({
 });
 const changeStatusValidationSchema = z.object({
   body: z.object({
-    status: z.enum([...UserStatusList] as [string, ...string[]]),
+    status: z.enum([...Object.values(UserStatus)] as [string, ...string[]]),
   }),
 });
 
