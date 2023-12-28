@@ -6,13 +6,20 @@ export const catchAsync = (fn: RequestHandler) => {
   };
 };
 
-
 // eslint-disable-next-line no-unused-vars
-export type TControllerFunction = (req: Request, res: Response, next: NextFunction) => void;
+export type TControllerFunction = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => void;
 
-export const wrapAsync = <T extends Record<string,TControllerFunction>>(controllers: T) => {
+export const wrapAsync = <T extends Record<string, TControllerFunction>>(
+  controllers: T,
+) => {
   // eslint-disable-next-line no-unused-vars
-  const wrappedControllers: {[k in keyof T]: TControllerFunction} = {} as {[k in keyof T]:TControllerFunction};
+  const wrappedControllers: { [k in keyof T]: TControllerFunction } = {} as {
+    [k in keyof T]: TControllerFunction;
+  };
   for (const key in controllers) {
     const controllerFunction = controllers[key];
     if (typeof controllerFunction === 'function') {

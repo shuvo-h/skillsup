@@ -37,6 +37,7 @@ const offeredCourseSchema = new Schema<TOfferedCourse>(
     maxCapacity: {
       type: Number,
       required: true,
+      min: 0,
     },
     section: {
       type: Number,

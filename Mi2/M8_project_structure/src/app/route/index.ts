@@ -11,6 +11,7 @@ import { semesterReegistrationRouter } from '../module/semesterRegistration/seme
 import { StudentRoute } from '../module/student/student.route';
 import { userRouter } from '../module/user/user.route';
 import { testRouter } from '../module/queryTest/testModels/testRouter';
+import { enrolledCourseRouter } from '../module/enrolledCourse/enrolledCourse.route';
 
 export const PrimaryRouter = express.Router();
 
@@ -32,6 +33,7 @@ const moduleRoutes = [
   { path: '/academic-departments', route: AcademicDepartmentRoute },
   { path: '/semester-registrations', route: semesterReegistrationRouter },
   { path: '/offered-courses', route: offeredCourseRouter },
+  { path: '/enrolled-courses', route: enrolledCourseRouter },
   { path: '/test', route: testRouter },
 ];
 

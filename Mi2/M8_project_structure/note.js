@@ -95,9 +95,76 @@
                         (ii) abstruct class: It is the Leader/Ideal class that the rest of the class should follow this abstruct class. Similar as Type. abstruct class can NOT create any instance but you can extends the class. eg, abstruct class Vehicle{constructor(){} abstruct startEngine():void}; class Car extends Vehicle{constructor(){super();} startEngine(){console.log('comples logic to start engine in this extends class. The abstruct class only contain the method name..')}} 
 
 
-    **** Node.js Short note:
     **** mongoDB Short note:
-        - Replication & sharding: scaling DB for performance
+    .insertOne       :        
+    .insertMany      :     
+    .create          :     
+    .find            :
+    .findOne         :
+    .projection      :
+    .sort            :   .sort({decedingFieldName:-1})  //accending = 1, deceeding = -1
+    .limit           :
+    .select          :
+    .deleteOne       :
+    .deleteMany      :
+    .createCollection: to create a collection db.createCollection('students')
+    .drop            : to delete a collection db.students.drop({writeConcern:1})
+    
+    Operators:
+    $eq              :  
+    $neq             :  
+    $gt              :  
+    $lt              :  
+    $gte             :  
+    $lte             : 
+    $in             : 
+    $nin             : 
+    $ne             : 
+    $and            : .find({$and:[{property1:""},{property2:""}]}) 
+    $or            : .find({$or:[{property1:""},{property2:""}]}) 
+    $exists         : .find({age:{$exist:true}}) // return only if age property present on the doc
+    $type           : .find({age:{$type:'date'}}) // return only if age value is a date type 
+    $size           : .find({friends:{$size: 5}}) // return the docs if friends array list has total 5 elements 
+    $all            : .find({friends:{$all:['element 1','element 2',....]}})  // return the doc if friends array has the following all elemnts
+    $elemMatch      : find({skills:{$elemMatch:[{lavel:"intermideate"},{experience:"3 year"},....]}}); // return if any of the element of skills array match with the lavel and experience property
+    $set            : [update premititive]: suitable for premititive data like number,string,boolean. for non-premititive data like array,object etc use $addToSet
+    $unset          : [remove a field]: findByIdAndUpdate(_id,{$unset:{fieldName:1}})
+    $addToSet       : [update array non-premititive]: only add unique values to the array. It is alternative of $push with unique value findByIdAndUpdate(_id,{$addToSet({fieldname:{$each:['elem1','elem2']}})})
+    $push           : [update array premititive + non-premititive]: never check unique values and add to the array. It is alternative of $addToSet but don't check unique value. findByIdAndUpdate(_id,{$push({fieldname:{$each:['elem1','elem2']}})})
+    $pop            : [update array, remove last element]: findByIdAndUpdate(_id,{$pop:{friends:1}}); it removes the last element from the "friends" array. if give -1, then remove the first element
+    $pull           : [update array, remove selected element]: findByIdAndUpdate(_id,{$pull:{friends:"firendValue"}}); it removes the matched single element from the "friends" array.  
+    $pullAll        : [update array, remove selected elements]: findByIdAndUpdate(_id,{$pull:{friends:["firendValue1","firendValue2",..]}}); it removes the matched all elements from the "friends" array. 
+    array_positional($): [update an element based on the position]: updateOne({_id:"","friends.roll":10},{$set:{"friends.$.blood":"AB-"}});   // it will update to friends:[{blood: "AB-",roll:10}] by matching roll 10
+    $inc            : [update to increase value]: findByIdAndUpdate(_id,{$inc:{balance: -300,checkBook.page: 1}}); // reduce the balance 300 amount
+
+    aggregation:
+    $match
+    $sort
+    $limit
+    $lookup
+    $addToFields
+    $unwind
+    $group
+    $project
+    $out            : create a new collection into database from aggregation pipeline stage 
+    $merge          : similar as $out but insted of creating a new collection, it merge the pipeline docs with current collection
+    $group          : {$group:{_id:"$targetField",newPropertesName:"",totalDocsInCollection:{$sum:1},totalDocsInGroup:{$count:1},maxValue:{$max:"$age"},minValue:{$min:"$age"},avgValue:{$avg:"$age"},countryList:{$push:"$address.country"},fullDocList:{$push:"$$ROOT"},}}
+                      group operators:
+                        _id: null //null means take all docs in a single group
+                        $sum
+                        $count
+                        $max
+                        $min
+                        $avg
+                        $push
+                        $$ROOT
+    $project        : {$project:{fieldName1: 1,fieldName2:"$referField",}}
+    $subtract       : {totalPay:{$subtract:[{$add:["$price","$fee"]},"$discount.price"]}}
+    $add            :
+
+    - Replication & sharding: scaling DB for performance
+
+    **** Node.js Short note:
     **** Redux Short note:
     **** RDBMS Short note:
     **** Prisma Short note:

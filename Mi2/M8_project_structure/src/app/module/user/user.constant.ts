@@ -4,10 +4,7 @@ export const USER_ROLE = {
   admin: 'admin',
 } as const; // never change the value
 
-
 export const UserStatus = {
   'in-progress': 'in-progress',
-  blocked:'blocked'
+  blocked: 'blocked',
 } as const;
-
-

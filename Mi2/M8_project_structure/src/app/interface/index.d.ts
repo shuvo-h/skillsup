@@ -9,8 +9,6 @@ declare global {
   }
 }
 
-
-
 /*
 // to add type in process.env
 declare namespace NodeJS{

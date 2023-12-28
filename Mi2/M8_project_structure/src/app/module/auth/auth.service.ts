@@ -20,7 +20,7 @@ const loginUser = async (payload: TLoginUser) => {
   if (user.isDeleted) {
     throw new AppError(httpStatus.FORBIDDEN, `User is already deleted`);
   }
-  // check if user is not deleted
+  // check if user is not blocked
   if (user.status === 'blocked') {
     throw new AppError(httpStatus.FORBIDDEN, `User is already blocked`);
   }
@@ -37,6 +37,8 @@ const loginUser = async (payload: TLoginUser) => {
     userId: user.id,
     role: user.role,
   };
+  console.log(tokenUser);
+  
   // access granted: accessToken, refreshToken
 
   const accessToken = createJwtToken(
