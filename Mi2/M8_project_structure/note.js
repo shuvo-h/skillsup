@@ -1,5 +1,7 @@
-/* 
+ 
+/*
     typescript Short note:
+    
     - Typescript extends javascript based on OOP
     Types in JS         Types in TS
         Number              Interface
@@ -15,7 +17,7 @@
         Type Safty                  all npm library doesn't support
         Productivity increase       Over engineering
         Less Bug & Testing          Migration challange
-    
+
     (x) = means ts error;
     void:               void can have undefined or null as value but don't accept never type.  let varName:void = null; varName = undefined;    (x) varName = never;
     unknown:            I don't know the type of the variabl enow, but in future when we will use this variable to assign a value, we will set that type to this variable. it means I know some value will be placed here but do not know it's type now. const makeDouble =(value:unknown)=>{if(typeof value === "string"){ return parseFloat(value)*2}}
@@ -94,7 +96,7 @@
                         (i) interface implements: inteface VehicleInterface {startEngineFn():void,model:string}; class CarClass implements  VehicleInterface{model:string; constructor(){} startEngineFn(){console.log("details to start the engine")}}; // Here startEngineFn hold the complex logic of start the car but from interface type, you can get idea what would be the result(start engine), but don't know the full logic of it(which will be described in class, not interface). Here interface works as a Type of the cass to implement, but the class can also take more property outside of the interface. 
                         (ii) abstruct class: It is the Leader/Ideal class that the rest of the class should follow this abstruct class. Similar as Type. abstruct class can NOT create any instance but you can extends the class. eg, abstruct class Vehicle{constructor(){} abstruct startEngine():void}; class Car extends Vehicle{constructor(){super();} startEngine(){console.log('comples logic to start engine in this extends class. The abstruct class only contain the method name..')}} 
 
-
+                        
     **** mongoDB Short note:
     .insertOne       :        
     .insertMany      :     
@@ -161,10 +163,75 @@
     $project        : {$project:{fieldName1: 1,fieldName2:"$referField",}}
     $subtract       : {totalPay:{$subtract:[{$add:["$price","$fee"]},"$discount.price"]}}
     $add            :
+    $bucket         : [take boundaries and create groups based on the boundaries]
+        {
+            $bucket:{
+                groupBy:"$age",
+                boundaries:[10,18,30],
+                default:"largerThanThirty",
+                output:{
+                    total: {$sum:1},
+                    name: {$push:"$name"},
+                    docList: {$push:"$$ROOT"},
+                }
+            }
+        }
+    $facet          : [multiple pipeline]: return separate output in a objectwith the given pipeline name. If there are 3 pipeline inside $facet, then in the return result array, there will be 3 output element.
+        {
+            $facet:{
+                "northCountriesOutput": [ //pipeline1 ],
+                "southCountriesOutput": [ //pipeline2 ],
+                "eastCountriesOutput": [ //pipeline3 ],
+                ...........
+            }
+        }
+    $lookup         : {$lookup:{from:"schemaNameInDbNotMongoose",localField:"localPropertyName",foreighField:"foreignPropertyName",as:"newPropertyName"}} // return an array. we can make object by taking 1st element by using {$addFields:{newPropertyName:{$elemAt["$newPropertyName",0]}}}
+
+    // embeding vs referencing: keep the full doc repeatedly in every collection called embedding. Keep a reference value like _id/email/slug etc so that we can populate called referencing
+    indexing:
+    coll_Scan: read page by page and find the answer.  Check for every doc and all property.
+    index_Scan: read index list find pageNumber and go to that page to find the answer. check only the doc_id or email on which it is indexed.
+    .explain("executionStats"):   after any query, this executionStats explain withh return the queryinfo like hoy many milliseconds it took to complete the query
+    IDHACK - it is a special type of index_scan. mongoDB give by default it on _id. and if we can to create index on any property, then this will be applied
+    COLLSCAN -if we do a query on a field which is not indexed.
+    compund_index: userSchema.index({ email: 1, name: 1 }); // Create a compound index on the 'email' and 'name' fields
+    text_index: userSchema.index({ username: 'text', email: 'text' });  // Create a text index on the 'username' and 'email' fields
+
 
     - Replication & sharding: scaling DB for performance
 
+
+
+
+
+    
     **** Node.js Short note:
+        nodejs - a javascript runtime built on Chrome's V8 engine
+        built-in-modules: OS(operating system), fs(file system), http, path, url,utils etc 
+        pros: run both client+server side, highly scaleable, single thread, event driven, non-blocking I?O operations, data intensive, streaming
+        cons: Highly CPU intensive, 
+        dependencies: V8 engine, Libuv
+        v8 engine: A engine written in (C++ & javascript) to understand javascript code. It is a runtime.
+        Libuv: A opensource library written in C++ to perform asynchronous I/O operation and gives Node.js to access Computer OS, File System, Networking etc.
+        Libuv => Event Loop & Thread Pool
+        Event Loop: execute callback fn and network I/O
+        Thread Pool: CPU intensive task, File access, File Compession, Cryptography etc.
+        Modeule: Isolated and reuseable block of code that has it's own scope
+        commonJS vs ESM: require/impoer, module.export/export default, .js/.mjs
+        type of module: local module, built-in module, third-party module 
+        path module: path.join() // join two paths. ususlly path.join(__dirname,"newFolder/file.txt")
+                        .parse()  // format a path into path object
+                        .resolve() // resolve the specified path into absolute path  
+                path.resolve('/a', 'b', 'c');     //    C:\a\b\c
+                path.resolve('/a', '/b', 'c');    //    C:\b\c
+                path.resolve('/a', '/b', '/c');   //    C:\c
+                path.join('/a', '/b', '/c');   //   \a\b\c
+                path.join('/a', '/b', 'c');    //   \a\b\c
+                path.join('/a', 'b', 'c');     //   \a\b\c
+                path.join('a', 'b', 'c');      //   a\b\c
+
+
+
     **** Redux Short note:
     **** RDBMS Short note:
     **** Prisma Short note:
