@@ -10,7 +10,7 @@
         Null                Tuple
         Undefined           Enum
         Object              Union
-        Symbol              Interface
+        Symbol              
     
     Advantage Vs Disadvantage
         Older Browser               Type Complexity
@@ -20,7 +20,7 @@
 
     (x) = means ts error;
     void:               void can have undefined or null as value but don't accept never type.  let varName:void = null; varName = undefined;    (x) varName = never;
-    unknown:            I don't know the type of the variabl enow, but in future when we will use this variable to assign a value, we will set that type to this variable. it means I know some value will be placed here but do not know it's type now. const makeDouble =(value:unknown)=>{if(typeof value === "string"){ return parseFloat(value)*2}}
+    unknown:            I don't know the type of the variable now, but in future when we will use this variable to assign a value, we will set that type to this variable. it means I know some value will be placed here but do not know it's type now. const makeDouble =(value:unknown)=>{if(typeof value === "string"){ return parseFloat(value)*2}}
     never:              The never type represent that the variable will not have any value. you can not assign any value to this variable even not null, undefined,string,tuple etc nothing. eg, const tthrowError = (message:string):never => throw new Error(message); here it is confirm that this function will never return any value.
     null:               null is a value that can be explicitly assigned by developer to a variable to indicate the absence of any meaningful object. Eg, setUser(null); Here we know the user object {id,email,token} but since the object is fetched and not present in frontend now, we can initially set it null.
     undefined:          undefined represent the absence of an expected value. eg, from the user object if we want to access user.role, it will return undefined. Here we were expecting a value 'admin','normal user','super admin'. but since the property role is not exist on user it will return undefined.
@@ -63,6 +63,8 @@
     Partial:    take a type and make all of it's property optional. eg. type TOptionalUser = Partial<TUser>;
     Readonly:   take a type and make all of it's property fixed and un-editable. eg. type TOptionalUser = Readonly<TUser>;      // You can not re-assign any property's value of the object
     Record:     take two generic value where first one is for keyName and secondOne is the value type. So we can add new property and value always. eg, type TEmptyObj = Record<string,unknown>; It means, the object will take the property in string type and the value of the property is unknown type
+    
+    >Utils Monomic< : Record porimane Readonly Required. Partial vabe Omit ke Pick koro.
     _________________________________________________________________________________________________
 
 
@@ -92,7 +94,7 @@
 
     polimorphism    : use same methodName in multiple inheritance classes but with diferent logic. during calling the method name will be same but based on the call, the result will different. chass Shape{area:number;constroctor(){}}; class Triangle extends Shape{constroctor(){} calculateArea(width,height){return 1/2*width*height}}; class Rectangle extends Shape{constroctor(){} calculateArea(width,height){return width*height}}; // Here calculateArea() will work like polimorhism. the same method name will work differently on different istance
     encapsulation   : It is the use of 'private' & 'protected' so that outside of the class and childs, the property/methods are not accessiable
-    abstruction     : 2 ways for abstruction. (i) using interface implements, (ii) using abstruct keyword. Keep complex logic inside the method and allow user to provide only params value. 
+    abstruction     : In short, class er type declaration. 2 ways for abstruction. (i) using interface implements, (ii) using abstruct keyword. Keep complex logic inside the method and allow user to provide only params value. 
                         (i) interface implements: inteface VehicleInterface {startEngineFn():void,model:string}; class CarClass implements  VehicleInterface{model:string; constructor(){} startEngineFn(){console.log("details to start the engine")}}; // Here startEngineFn hold the complex logic of start the car but from interface type, you can get idea what would be the result(start engine), but don't know the full logic of it(which will be described in class, not interface). Here interface works as a Type of the cass to implement, but the class can also take more property outside of the interface. 
                         (ii) abstruct class: It is the Leader/Ideal class that the rest of the class should follow this abstruct class. Similar as Type. abstruct class can NOT create any instance but you can extends the class. eg, abstruct class Vehicle{constructor(){} abstruct startEngine():void}; class Car extends Vehicle{constructor(){super();} startEngine(){console.log('comples logic to start engine in this extends class. The abstruct class only contain the method name..')}} 
 
@@ -206,29 +208,46 @@
 
     
     **** Node.js Short note:
-        nodejs - a javascript runtime built on Chrome's V8 engine
-        built-in-modules: OS(operating system), fs(file system), http, path, url,utils etc 
-        pros: run both client+server side, highly scaleable, single thread, event driven, non-blocking I?O operations, data intensive, streaming
-        cons: Highly CPU intensive, 
-        dependencies: V8 engine, Libuv
-        v8 engine: A engine written in (C++ & javascript) to understand javascript code. It is a runtime.
-        Libuv: A opensource library written in C++ to perform asynchronous I/O operation and gives Node.js to access Computer OS, File System, Networking etc.
-        Libuv => Event Loop & Thread Pool
-        Event Loop: execute callback fn and network I/O
-        Thread Pool: CPU intensive task, File access, File Compession, Cryptography etc.
-        Modeule: Isolated and reuseable block of code that has it's own scope
-        commonJS vs ESM: require/impoer, module.export/export default, .js/.mjs
-        type of module: local module, built-in module, third-party module 
-        path module: path.join() // join two paths. ususlly path.join(__dirname,"newFolder/file.txt")
-                        .parse()  // format a path into path object
-                        .resolve() // resolve the specified path into absolute path  
-                path.resolve('/a', 'b', 'c');     //    C:\a\b\c
-                path.resolve('/a', '/b', 'c');    //    C:\b\c
-                path.resolve('/a', '/b', '/c');   //    C:\c
-                path.join('/a', '/b', '/c');   //   \a\b\c
-                path.join('/a', '/b', 'c');    //   \a\b\c
-                path.join('/a', 'b', 'c');     //   \a\b\c
-                path.join('a', 'b', 'c');      //   a\b\c
+    nodejs - a javascript runtime built on Chrome's V8 engine
+    built-in-modules: OS(operating system), fs(file system), http, path, url,utils etc 
+    pros: run both client+server side, highly scaleable, single thread, event driven, non-blocking I?O operations, data intensive, streaming
+    cons: Highly CPU intensive, 
+    dependencies: V8 engine, Libuv
+    v8 engine: A engine written in (C++ & javascript) to understand javascript code. It is a runtime.
+    Libuv: A opensource library written in C++ to perform asynchronous I/O operation and gives Node.js to access Computer OS, File System, Networking etc.
+    Libuv => Event Loop & Thread Pool
+    Event Loop: execute callback fn and network I/O
+    Thread Pool: CPU intensive task, File access, File Compession, Cryptography etc.
+    Modeule: Isolated and reuseable block of code that has it's own scope
+    commonJS vs ESM: require/impoer, module.export/export default, .js/.mjs
+    type of module: local module, built-in module, third-party module 
+    path module: path.join() // join two paths. ususlly path.join(__dirname,"newFolder/file.txt")
+                    .parse()  // format a path into path object
+                    .resolve() // resolve the specified path into absolute path  
+            path.resolve('/a', 'b', 'c');     //    C:\a\b\c
+            path.resolve('/a', '/b', 'c');    //    C:\b\c
+            path.resolve('/a', '/b', '/c');   //    C:\c
+            path.join('/a', '/b', '/c');   //   \a\b\c
+            path.join('/a', '/b', 'c');    //   \a\b\c
+            path.join('/a', 'b', 'c');     //   \a\b\c
+            path.join('a', 'b', 'c');      //   a\b\c
+    fs.readFileSync()       // synchronously will block the main thread
+        .readFile()         // asynchronous will NOT block the main thread (recommended to use)|| await fs.readFile("/path/file.txt","utf-8");
+        .writeFileSync()    // synchronously will block the main thread
+        .writeFile()        // asynchronous will NOT block the main thread (recommended to use) || await fs.writeFile("/path/file.txt","new text data","utf8");
+        .createReadStream().on('data',(bufferChunk)=>{res.write(bufferChunk)}).on('end',cb).on('error',cb)    // continuously send buffer chunk to user to improve user experience
+        .createWriteStream()   
+    new EventEmitter().on('eventName',(paramBodyData)=>{}).emmit('eventName',bodyData).off('eventName')
+    Stream:send small amount of data(chunk) from a large data continuously 
+    Buffer: during streaming if small data chunk
+        - better user experience,
+        - short memory consumption on server since doen't load the full file at once
+    Type of streams: 
+        - Readable Stream: only read data (ex. http req, fs.readStream)
+        - Writeable Stream:  only write data (ex. http res, fs.writeStream)
+        - Duplex Stream: for both read and write (ex. socket)
+        - Transform Stream: reshape the stream data or change the data during stream (ex. Stream.Transform({transform(chunk,encoding,cb){this.push(modifiedChunk);cb();}}))
+
 
 
 

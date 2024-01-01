@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { UploadApiResponse, v2 as cloudinary } from 'cloudinary';
 import { env } from '../config/config';
 import multer from 'multer';
 import fs from 'fs';
@@ -11,7 +11,7 @@ cloudinary.config({
 export const uploadImgToCloudinary = async (
   imgName: string,
   imgFileFullPath: string,
-) => {
+):Promise<UploadApiResponse> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
       imgFileFullPath,
@@ -28,7 +28,12 @@ export const uploadImgToCloudinary = async (
         if (error) {
           reject(error);
         }
-        resolve(result);
+        if (result === undefined) {
+          // Handle the case where result is undefined (if needed)
+          reject(new Error('Cloudinary upload result is undefined'));
+        } else {
+          resolve(result as UploadApiResponse);
+        }
       },
     );
   });
