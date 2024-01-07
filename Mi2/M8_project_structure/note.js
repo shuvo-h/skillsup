@@ -216,10 +216,10 @@
     v8 engine: A engine written in (C++ & javascript) to understand javascript code. It is a runtime.
     Libuv: A opensource library written in C++ to perform asynchronous I/O operation and gives Node.js to access Computer OS, File System, Networking etc.
     Libuv => Event Loop & Thread Pool
-    Event Loop: execute callback fn and network I/O
+    Event Loop: execute callback fn and network I/O. It allow to perform non-blocking I/O operations.
     Thread Pool: CPU intensive task, File access, File Compession, Cryptography etc.
     Modeule: Isolated and reuseable block of code that has it's own scope
-    commonJS vs ESM: require/impoer, module.export/export default, .js/.mjs
+    commonJS vs ESM: require/import, module.export/export default, .js/.mjs
     type of module: local module, built-in module, third-party module 
     path module: path.join() // join two paths. ususlly path.join(__dirname,"newFolder/file.txt")
                     .parse()  // format a path into path object

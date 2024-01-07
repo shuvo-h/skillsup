@@ -12,9 +12,16 @@ export const uploadImgToCloudinary = async (
   imgName: string,
   imgFileFullPath: string,
 ):Promise<UploadApiResponse> => {
+  /*
+  // compress the image size(MB) before upload to cloudinary
+  const sharp = require('sharp');
+  const compressedImage = await sharp(imgFileFullPath)
+  .jpeg({ quality: 80 }) // Set your desired quality (80 is just an example)
+  .toBuffer();
+  */
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
-      imgFileFullPath,
+      imgFileFullPath, // send compressedImage
       { public_id: imgName },
       function (error, result) {
         // delete the temporary file uploaded by multer
