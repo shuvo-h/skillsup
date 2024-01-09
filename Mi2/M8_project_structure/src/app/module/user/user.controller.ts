@@ -85,6 +85,30 @@ const changeStatus = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const createQrCode = catchAsync(async (req, res) => {
+
+  const result = await UserService.createUserQrCode(req.user);
+
+  sendRes(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'QR Code is generated succesfully',
+    data: result,
+  });
+});
+const decodeQrCode = catchAsync(async (req, res) => {
+  console.log(req.body,req.file);
+  
+  const { imageData } = req.body;
+  const result = await UserService.decodeUserQrCode(imageData);
+
+  sendRes(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'QR Code is decoded succesfully',
+    data: result,
+  });
+});
 
 export const UserController = {
   createStudent,
@@ -92,4 +116,6 @@ export const UserController = {
   createAdmin,
   getMe,
   changeStatus,
+  createQrCode,
+  decodeQrCode,
 };

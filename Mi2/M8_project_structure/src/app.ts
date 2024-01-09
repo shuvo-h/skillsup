@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
+// import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { globalErrorHandler } from './app/middlewares/globalErrhandler';
 import { notFound } from './app/middlewares/notFound';
@@ -16,6 +17,7 @@ app.use(
     origin: ['http://localhost:3000'],
   }),
 );
+// app.use(bodyParser.json({ limit: '50mb' }));
 
 // application routes
 app.use('/api/v1', PrimaryRouter);

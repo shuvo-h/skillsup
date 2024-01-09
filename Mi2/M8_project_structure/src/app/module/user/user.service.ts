@@ -18,10 +18,13 @@ import { Faculty } from '../faculty/faculty.model';
 import { Admin } from '../admin/admin.model';
 import { USER_ROLE } from './user.constant';
 import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary';
+import { QRCodeUtils } from '../../utils/QRcode';
+import { JwtPayload } from 'jsonwebtoken';
 
 const createStudentIntoDB = async (
   password: string,
   studentData: TStudent,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   multerProfileImg: any,
 ) => {
   /*
@@ -253,6 +256,20 @@ const changeStatusIntoDb = async (id: string, payload: { status: string }) => {
   // const result = await
   return result;
 };
+const createUserQrCode = async (payload: JwtPayload) => {
+  const stringifiedUser = JSON.stringify(payload);
+  const result = await QRCodeUtils.createQRcode(stringifiedUser);
+
+  // const result = await
+  return result;
+};
+const decodeUserQrCode = async (payload: string) => {
+  console.log(payload);
+  
+  const result = await QRCodeUtils.decodeQRcode(payload);
+
+  return result;
+};
 
 export const UserService = {
   createStudentIntoDB,
@@ -260,4 +277,6 @@ export const UserService = {
   createAdminIntoDB,
   getMe,
   changeStatusIntoDb,
+  createUserQrCode,
+  decodeUserQrCode,
 };

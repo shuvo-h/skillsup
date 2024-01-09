@@ -48,3 +48,13 @@ userRouter.get(
   authCheck(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
   UserController.getMe,
 );
+
+
+// get QR code of user
+userRouter.get(
+  '/me/qr-code',
+  authCheck(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  UserController.createQrCode,
+);
+userRouter.post('/me/qr-code',authCheck(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),multer_uploader.single('imageData'),
+UserController.decodeQrCode,);
