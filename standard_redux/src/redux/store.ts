@@ -1,13 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
+// import LoggerMiddleware from "./middleware/logger";
 import counterSlice from "./features/counterSlice";
-import LoggerMiddleware from "./middleware/logger";
+import todoSlice from "./features/todoSlice";
+import { dummyJsonApi } from "./api/api";
 
 export const store = configureStore({
+    devTools: import.meta.env.MODE === 'development', // in production isProduction = false
     reducer: {
         counter: counterSlice,
+        todo: todoSlice,
+        [dummyJsonApi.reducerPath]: dummyJsonApi.reducer,
     },
-    devTools: import.meta.env.MODE === 'development', // in production isProduction = false
-    // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(LoggerMiddleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
+        // LoggerMiddleware,
+        dummyJsonApi.middleware
+    ),
 
 });
 
