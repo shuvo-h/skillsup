@@ -1,7 +1,10 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { TTodo, removeTodo, toggleTodoComplete } from "@/redux/features/todoSlice";
+import { TTodo, removeTodo, 
+  // toggleTodoComplete 
+} from "@/redux/features/todoSlice";
 import { useAppDispatch } from "@/redux/storeHook";
+import { dummyJsonApi } from "@/redux/api/api";
 
 type TTodoProps = {
   todo: TTodo
@@ -9,24 +12,47 @@ type TTodoProps = {
 
 const TodoCard = ({todo}:TTodoProps) => {
   const dispatch = useAppDispatch();
+  const [updateTodoMutation,{isError,isLoading,isSuccess,data:updatedTodo}] = dummyJsonApi.useUpdateTodoMutation();
+  console.log({isError,isLoading,isSuccess,data:updatedTodo});
+  console.log(todo);
+  
+  
   const toggleComplete = () =>{
-    console.log("clicked");
-    dispatch(toggleTodoComplete(todo.id))
+    // dispatch(toggleTodoComplete(todo.id))
+    const taskData = {...todo,isCompleted: !todo.isCompleted};
+    updateTodoMutation({_id:todo._id,bodyData:taskData});
+  }
+  const priorityColor = (priority:string) =>{
+    switch (priority) {
+      case 'high':
+        return 'bg-red-500';
+      case 'low':
+        return 'bg-green-500';
+      case 'medium':
+        return 'bg-yellow-500';
+        
+      default:
+        return 'bg-red-500';
+    }
   }
   return (
-    <div className="bg-white rounded-md flex justify-between items-center p-3 border">
-      <input onChange={toggleComplete} id="complete" name="complete" type="checkbox"  />
-      <p className="font-semibold">{todo.title}</p>
+    <div className="bg-white rounded-md flex gap-2 justify-between items-center p-3 border">
+      <input className="mr-3" onChange={toggleComplete} checked={todo.isCompleted} id="complete" name="complete" type="checkbox"  />
+      <p className="font-semibold flex-1">{todo.title}</p>
       {/* <p>Time</p> */}
-      <p>{todo.description}</p>
-      
-      <div>
+      <div className="flex-1 flex items-center gap-2">
+        <div className={`size-3 rounded-full ${priorityColor(todo.priority)}`}></div>
+          <p>{todo.priority}</p>
+      </div>
+      <div className="flex-1">
         {
           todo.isCompleted 
           ? <p className="text-green-500">Done</p>
           : <p className="text-red-500">Pending</p>
         }
       </div>
+      <p className="flex-[2]">{todo.description}</p>
+      
       <div className="space-x-5">
         <Button className="bg-red-500" onClick={()=>dispatch(removeTodo(todo.id))}>
           <svg

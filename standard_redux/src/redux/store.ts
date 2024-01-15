@@ -13,7 +13,7 @@ export const store = configureStore({
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
         // LoggerMiddleware,
-        dummyJsonApi.middleware
+        dummyJsonApi.middleware,
     ),
 
 });
