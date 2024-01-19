@@ -5,7 +5,10 @@ import Contact from "../pages/Contact";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import AdminLayout from "../components/layout/AdminLayout";
-import {  adminRoutes } from "./admin.routes";
+import { routeGenerator } from "../utilities/routesGenerator";
+import { adminPaths } from "./admin.routes";
+import { facultyPaths } from "./faculty.routes";
+import { studentPaths } from "./student.routes";
 
 const routerList = [
     {
@@ -25,17 +28,17 @@ const routerList = [
     {
         path: "/admin",
         element: <AdminLayout />,
-        children: [...adminRoutes],
+        children: routeGenerator(adminPaths),
     },
     {
         path: "/faculty",
         element: <App />,
-        // children: [...adminRoutes],
+        children: routeGenerator(facultyPaths),
     },
     {
         path: "/student",
         element: <AdminLayout />,
-        // children: [...adminRoutes],
+        children: routeGenerator(studentPaths),
     },
     {
         path: "/login",

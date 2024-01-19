@@ -15,7 +15,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000'], // only access by this port list
+    credentials: true, // allow to set cookies in header
   }),
 );
 // app.use(bodyParser.json({ limit: '50mb' }));
