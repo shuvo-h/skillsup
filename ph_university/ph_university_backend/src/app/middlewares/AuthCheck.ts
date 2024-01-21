@@ -14,12 +14,20 @@ export const authCheck = (...requiredRoles: TUserRole[]) => {
     if (!token) {
       throw new AppError(httpStatus.FORBIDDEN, `You are not authorized!`);
     }
+    let decoded;
 
-    // check if token is valid
-    const decoded = jwt.verify(
-      token,
-      env.jwt_access_secret as string,
-    ) as JwtPayload;
+    // need extra try catch to handle jwt verify error throw with different status code
+    try {
+      // check if token is valid
+      decoded = jwt.verify(token,env.jwt_access_secret as string,) as JwtPayload;
+      if (!decoded) {
+        throw new AppError(httpStatus.UNAUTHORIZED, `You are not authorized!`);
+      }
+      
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      throw new AppError(httpStatus.UNAUTHORIZED, `${error.message}`);
+    }
     const { role, userId, iat } = decoded;
 
     const user = await UserModel.findOne({ id: userId }).select('+password'); // tell with "+" sign to select password since in schema we have used password:{select:0}; the +sign return doc with other rest of the properties.

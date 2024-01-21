@@ -1,15 +1,15 @@
-import React, { ReactNode } from 'react';
-import { useAppSelector } from '../../redux/storeHook';
-import { authGetters } from '../../redux/features/auth/authSlice';
-import { Navigate } from 'react-router-dom';
+import { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { authGetters } from "../../redux/features/auth/authSlice";
+import { useAppSelector } from "../../redux/storeHook";
 
-const ProtectedRoute = ({children}:{children: ReactNode}) => {
-    const token = useAppSelector(authGetters.useCurrentToken)
-    if (!token) {
-        return <Navigate to={'/login'} replace={true} />
-    }
+const ProtectedRoute = ({ children }: { children: ReactNode }) => {
+  const token = useAppSelector(authGetters.selectCurrentToken);
+  if (!token) {
+    return <Navigate to={"/login"} replace={true} />;
+  }
 
-    return children;
+  return children;
 };
 
 export default ProtectedRoute;
