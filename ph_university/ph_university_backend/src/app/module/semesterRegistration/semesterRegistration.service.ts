@@ -5,6 +5,8 @@ import { AcademicSemesterModel } from '../academicSemester/academicSemester.mode
 import { RegistrationStatus } from './semesterRegistration.constatnt';
 import { TSemesterRegistration } from './semesterRegistration.interface';
 import { SemesterRegistrationModel } from './semesterRegistration.model';
+import mongoose from 'mongoose';
+import { OfferedCourseModel } from '../offeredCourse/offeredCourse.model';
 
 const createSemesterRegistrationIntoDB = async (
   payload: TSemesterRegistration,
@@ -123,10 +125,83 @@ const updateSemesterRegistrationIntoDB = async (
 
   return result;
 };
+const deleteSemesterRegistrationByIdIntoDB = async (id: string,) => {
+  // check if the semester registrationis exist
+  const existSemesterRegistration =
+    await SemesterRegistrationModel.findById(id);
+  if (!existSemesterRegistration) {
+    throw new AppError(httpStatus.NOT_FOUND, "This semester doesn't exist!");
+  }
+
+  // if semestrer registration time is ended
+  if (existSemesterRegistration?.status === RegistrationStatus.ENDED) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      `Requested semester is alread ${existSemesterRegistration.status}`,
+    );
+  }
+
+  if (    existSemesterRegistration.status !== RegistrationStatus.UPCOMMING   ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      `You can't delete ${existSemesterRegistration.status} semester`,
+    );
+  }
+  
+  //deleting associated offered courses
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const deletedOfferedCourse = await OfferedCourseModel.deleteMany(
+      {
+        semesterRegistration: id,
+      },
+      {
+        session,
+      },
+    );
+    if (!deletedOfferedCourse) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to delete semester registration !',
+      );
+    }
+
+    const deletedSemisterRegistration =
+    await SemesterRegistrationModel.findByIdAndDelete(id, {
+      session,
+      new: true,
+    });
+    if (!deletedSemisterRegistration) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to delete semester registration !',
+      );
+    }
+
+
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err:any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err.message);
+  }
+
+
+
+};
 
 export const SemesterRegistrationService = {
   createSemesterRegistrationIntoDB,
   getAllSemesterRegistrationsFromDB,
   getSingleSemesterRegistrationFromDB,
   updateSemesterRegistrationIntoDB,
+  deleteSemesterRegistrationByIdIntoDB,
 };

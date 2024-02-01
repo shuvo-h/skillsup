@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TAcademicFaculty } from './academicFaculty.interface';
 import { AcademicFacultyModel } from './academicFaculty.model';
 
@@ -7,7 +8,7 @@ const createAcademicFacultyIntoDB = async (payload: TAcademicFaculty) => {
 };
 const getAllAcademicFacultiesFromDB = async () => {
   const result = await AcademicFacultyModel.find();
-  return result;
+  return {data:result,meta:{} as any};
 };
 const getSingleAcademicFacultyFromDB = async (id: string) => {
   const result = await AcademicFacultyModel.findById(id);

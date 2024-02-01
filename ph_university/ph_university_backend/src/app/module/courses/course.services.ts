@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
@@ -22,7 +23,7 @@ const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
     .fields();
   const result = await courseQuery.modelQuery;
   const meta = await courseQuery.countTotal();
-  return {meta,result};
+  return {meta,data:result};
 };
 const getSingleCourseFromDB = async (id: string) => {
   const result = await CourseModel.findById(id).populate(
@@ -139,6 +140,15 @@ const assignFacultiesWithCourseIntoDB = async (
   );
   return result;
 };
+
+
+  const getFacultiesWithCourseFromDB = async (courseId: string) => {
+    const result = await CourseFacultyModel.findOne({course:courseId}).populate(
+      'faculties',
+    );
+    return {data:result,meta:{}as any};
+  };
+
 const removeFacultiesWithCourseFromDB = async (
   id: string,
   payload: Partial<TCourseFaculty>,
@@ -164,5 +174,6 @@ export const courseServuces = {
   updateCourseIntoDB,
   deleteCourseFromDB,
   assignFacultiesWithCourseIntoDB,
+  getFacultiesWithCourseFromDB,
   removeFacultiesWithCourseFromDB,
 };

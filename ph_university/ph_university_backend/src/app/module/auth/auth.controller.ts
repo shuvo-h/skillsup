@@ -10,10 +10,14 @@ const loginUser = catchAsync(async (req, res) => {
   res.cookie('refreshToken', refreshToken, {
     secure: env.isProduction,
     httpOnly: true,
+    sameSite: "none",
+    maxAge: 365 * 24 * 60*60*1000
   });
   res.cookie('accessToken', accessToken, {
     secure: env.isProduction,
     httpOnly: true,
+    sameSite: "none",
+    maxAge: 365 * 24 * 60*60*1000
   });
   sendRes(res, {
     statusCode: httpStatus.OK,

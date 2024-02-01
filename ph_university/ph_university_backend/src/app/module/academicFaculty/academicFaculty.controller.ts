@@ -26,7 +26,8 @@ const getAllAcademicFaculty = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: 'Academic faculties are fetched successfully',
-      data: result,
+      meta: result.meta,
+      data: result.data,
     });
   },
 );

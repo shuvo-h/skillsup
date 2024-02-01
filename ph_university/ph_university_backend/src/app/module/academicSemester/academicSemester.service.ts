@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { AcademicSemesterNameCodeMapper } from './academicSemester.constant';
@@ -14,7 +15,7 @@ const createAcademicSemesterIntoDB = async (payload: TAcademicSemester) => {
 
 const getAllAcademicSemestersFromDB = async () => {
   const result = await AcademicSemesterModel.find();
-  return result;
+  return {data:result,meta:{} as any};
 };
 
 const getSingleAcademicSemesterFromDB = async (id: string) => {

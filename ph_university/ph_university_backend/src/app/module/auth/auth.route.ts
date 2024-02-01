@@ -13,7 +13,7 @@ authRouter.post(
 );
 authRouter.post(
   '/change-password',
-  authCheck(USER_ROLE.student, USER_ROLE.admin, USER_ROLE.faculty),
+  authCheck(USER_ROLE['super-admin'],USER_ROLE.student, USER_ROLE.admin, USER_ROLE.faculty),
   validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthControllers.changePassword,
 );

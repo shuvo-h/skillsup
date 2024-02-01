@@ -25,6 +25,11 @@ router.patch(
   validateRequest(courseValidations.updateCourseValidationSchema),
   CourseControllers.updateCourse,
   );
+  router.get(
+    '/:courseId/get-faculties',
+    authCheck(USER_ROLE.admin,USER_ROLE['super-admin'],USER_ROLE.faculty,USER_ROLE.student),
+    CourseControllers.getFacultiesWithCourse,
+    );
   router.put(
     '/:courseId/assign-faculties',
     authCheck(USER_ROLE.admin,USER_ROLE['super-admin']),

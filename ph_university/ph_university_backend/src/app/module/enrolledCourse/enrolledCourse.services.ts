@@ -187,7 +187,7 @@ const updateEnrolledCourseIntoDb = async(facultyId:string,payload:Partial<TEnrol
   // chekc if all exam are done, update grande & grade point
   if(courseMarks?.finalTerm){
     const {classTest1,classTest2,midTerm,finalTerm} = isCourseBelongToFaculty.courseMarks;
-    const totalMarks = Math.ceil(classTest1*0.10) + Math.ceil(classTest2*0.10) + Math.ceil(midTerm*0.30) + Math.ceil(finalTerm*0.50);
+    const totalMarks = Math.ceil(classTest1) + Math.ceil(classTest2) + Math.ceil(midTerm) + Math.ceil(finalTerm);
     
     const gradeResult = enrollCourseUtils.calculateGrageAndPoints(totalMarks);
     

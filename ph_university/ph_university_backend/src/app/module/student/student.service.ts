@@ -99,12 +99,8 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   // using query builder class
   const studentBaseQuery = StudentModel.find().populate([
-    {
-      path: 'academicDepartment',
-      populate: {
-        path: 'academicFaculty',
-      },
-    },
+    {   path: 'academicDepartment',  },
+    { path: 'academicFaculty' },
     { path: 'admissionSemester' },
     { path: 'user' },
   ]);

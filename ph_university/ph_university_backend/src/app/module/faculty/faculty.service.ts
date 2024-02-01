@@ -8,9 +8,10 @@ import { FacultySearchableFields } from './faculty.constant';
 import { TFaculty } from './faculty.interface';
 import { Faculty } from './faculty.model';
 
+
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
-    Faculty.find().populate('academicDepartment'),
+    Faculty.find().populate('academicDepartment academicFaculty'),
     query,
   )
     .search(FacultySearchableFields)

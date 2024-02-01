@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TAcademicDepartment } from './academicDepartment.interface';
 import { AcademicDepartmentModel } from './academicDepartment.model';
 
@@ -15,7 +16,7 @@ const createAcademicDepartmentIntoDB = async (payload: TAcademicDepartment) => {
 const getAllAcademicDepartmentsFromDB = async () => {
   const result =
     await AcademicDepartmentModel.find().populate('academicFaculty');
-  return result;
+  return {data:result,meta:{}as any};
 };
 const getSingleAcademicDepartmentFromDB = async (id: string) => {
   const result =
