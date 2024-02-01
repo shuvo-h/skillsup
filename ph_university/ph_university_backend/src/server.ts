@@ -2,6 +2,7 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import { app } from './app';
 import { env } from './app/config/config';
 import { Server } from 'http';
+import { superAdminFeatures } from './app/DB';
 
 let server: Server;
 
@@ -12,6 +13,9 @@ async function main() {
       await mongoose.connect(env.DB_URL, {
         dbName: 'test',
       } as ConnectOptions);
+
+      // create superadmin 
+      superAdminFeatures.seedSuperAdmin();
     }
 
     // listen server

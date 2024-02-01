@@ -58,7 +58,7 @@ export const authCheck = (...requiredRoles: TUserRole[]) => {
         );
       }
     }
-
+    
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(httpStatus.FORBIDDEN, `You are not permitted`);
     }

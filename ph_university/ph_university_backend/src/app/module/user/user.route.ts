@@ -13,7 +13,7 @@ export const userRouter = express.Router();
 
 userRouter.post(
   '/create-student',
-  authCheck(USER_ROLE.admin),
+  authCheck(USER_ROLE.admin,USER_ROLE['super-admin']),
   multer_uploader.single('profile_img'),
   (req: Request, res: Response, next: NextFunction) => {
     // after image upload, convert form data from body.data to json and attach with body
@@ -26,26 +26,38 @@ userRouter.post(
 
 userRouter.post(
   '/create-faculty',
-  authCheck(USER_ROLE.admin),
+  authCheck(USER_ROLE.admin,USER_ROLE['super-admin']),
+  multer_uploader.single('profile_img'),
+  (req: Request, res: Response, next: NextFunction) => {
+    // after image upload, convert form data from body.data to json and attach with body
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   validateRequest(createFacultyValidationSchema),
   UserController.createFaculty,
 );
 
 userRouter.post(
   '/create-admin',
-  // authCheck(USER_ROLE.admin), // need to be super_admin
+  authCheck(USER_ROLE['super-admin']), // need to be super_admin
+  multer_uploader.single('profile_img'),
+  (req: Request, res: Response, next: NextFunction) => {
+    // after image upload, convert form data from body.data to json and attach with body
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   validateRequest(createAdminValidationSchema),
   UserController.createAdmin,
 );
 userRouter.post(
   '/change-status/:id',
-  authCheck(USER_ROLE.admin),
+  authCheck(USER_ROLE.admin,USER_ROLE['super-admin']),
   validateRequest(userValidations.changeStatusValidationSchema),
   UserController.changeStatus,
 );
 userRouter.get(
   '/me',
-  authCheck(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  authCheck(USER_ROLE.admin,USER_ROLE['super-admin'], USER_ROLE.faculty, USER_ROLE.student),
   UserController.getMe,
 );
 

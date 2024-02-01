@@ -7,6 +7,8 @@ import { catchAsync } from '../../utils/catchAsync';
 const createStudent = catchAsync(async (req, res): Promise<void> => {
   const { password, student } = req.body;
   const profileImgFile = req.file;
+  
+  
   // zod validation
   //   const zodParsedData = studentZodValidationSchema.parse(student);
 
@@ -39,7 +41,7 @@ const createStudent = catchAsync(async (req, res): Promise<void> => {
 const createFaculty = catchAsync(async (req, res) => {
   const { password, faculty: facultyData } = req.body;
 
-  const result = await UserService.createFacultyIntoDB(password, facultyData);
+  const result = await UserService.createFacultyIntoDB(password, facultyData,req.file);
 
   sendRes(res, {
     statusCode: httpStatus.OK,
@@ -52,7 +54,7 @@ const createFaculty = catchAsync(async (req, res) => {
 const createAdmin = catchAsync(async (req, res) => {
   const { password, admin: adminData } = req.body;
 
-  const result = await UserService.createAdminIntoDB(password, adminData);
+  const result = await UserService.createAdminIntoDB(password, adminData,req.file);
 
   sendRes(res, {
     statusCode: httpStatus.OK,
@@ -63,7 +65,7 @@ const createAdmin = catchAsync(async (req, res) => {
 });
 const getMe = catchAsync(async (req, res) => {
   const { userId, role } = req.user;
-
+  
   const result = await UserService.getMe(userId, role);
 
   sendRes(res, {

@@ -25,6 +25,9 @@ export const env = {
   jwt_access_token_expire_in: process.env.JWT_ACCESS_TOKEN_EXPIRE_IN,
   jwt_refresh_token_expire_in: process.env.JWT_REFRESH_TOKEN_EXPIRE_IN,
 
+  // personal env
+  super_admin_password: process.env.SUPER_ADMIN_PASSWORD,
+
   // smtp info
   smtp_host: process.env.SMTP_HOST,
   smtp_port: process.env.SMTP_PORT,

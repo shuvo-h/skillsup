@@ -51,6 +51,7 @@ const createStudentIntoDB = async (
 
   // create a user object
   const userData: Partial<TUser> = {}; // Partial = take some of the properties, rest are optional
+console.log("ok");
 
   // if password not given, use default password
   userData.password = password || (env.default_password as string);
@@ -65,7 +66,17 @@ const createStudentIntoDB = async (
   const admissionSemester = await AcademicSemesterModel.findById(
     studentData.admissionSemester,
   );
+  if (!admissionSemester) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Admission semester didn't found");
+  }
 
+  // check department
+  const academicDepartment = await AcademicDepartmentModel.findById(studentData.academicDepartment);
+  if (!academicDepartment) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Academic department didn't found");
+  }
+  studentData.academicFaculty = academicDepartment.academicFaculty;
+  
   // use transecction when operation in two database to keep data consistency when get any error
   // [transition_step: 1]: create session
   const session = await mongoose.startSession();
@@ -76,16 +87,21 @@ const createStudentIntoDB = async (
     if (admissionSemester) {
       userData.id = await generateStudentId(admissionSemester);
     }
+    
 
     // upload profile image to cloudinary
-    const imgName = `${userData.id}-${studentData.name.firstName}`;
-    const imgMulterFilePath = multerProfileImg.path;
-    const { secure_url } = await uploadImgToCloudinary(
-      imgName,
-      imgMulterFilePath,
-    );
-    if (!secure_url) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to upload image');
+    if (multerProfileImg?.path) {
+      const imgName = `${userData.id}-${studentData.name.firstName}`;
+      const imgMulterFilePath = multerProfileImg.path;
+      const { secure_url } = await uploadImgToCloudinary(
+        imgName,
+        imgMulterFilePath,
+      );
+      studentData.profileImg = secure_url; // profile image from cloudinary
+      if (!secure_url) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to upload image');
+      }
+      
     }
 
     // [transition_step: 3.1]: create a user(transection_1)
@@ -98,7 +114,7 @@ const createStudentIntoDB = async (
     // set id, _id as user
     studentData.id = newUser[0].id; // embeding id for query
     studentData.user = newUser[0]._id; // reference ID for populate
-    studentData.profileImg = secure_url; // profile image frpm cloudinary
+    
 
     // [transition_step: 3.2]: create a student(transection_2)
     const newStudent = await StudentModel.create([studentData], { session });
@@ -112,7 +128,7 @@ const createStudentIntoDB = async (
 
     return newStudent;
   } catch (error) {
-    // console.log(error);
+    console.log(error);
 
     // [transition_step: 6]: cancel the transection
     await session.abortTransaction();
@@ -125,7 +141,7 @@ const createStudentIntoDB = async (
   }
 };
 
-const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
+const createFacultyIntoDB = async (password: string, payload: TFaculty,multerProfileImg: any,) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
@@ -144,6 +160,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   if (!academicDepartment) {
     throw new AppError(400, 'Academic department not found');
   }
+  payload.academicFaculty = academicDepartment.academicFaculty;
 
   const session = await mongoose.startSession();
 
@@ -151,6 +168,20 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     session.startTransaction();
     //set  generated id
     userData.id = await generateFacultyId();
+
+    if (multerProfileImg) {
+      const imgName = `${userData.id}-${payload?.name?.firstName}`;
+      const imgMulterFilePath = multerProfileImg?.path;
+      const { secure_url } = await uploadImgToCloudinary(
+        imgName,
+        imgMulterFilePath,
+      );
+      payload.profileImg = secure_url; // profile image from cloudinary
+      if (!secure_url) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to upload image');
+      }
+      
+    }
 
     // create a user (transaction-1)
     const newUser = await UserModel.create([userData], { session }); // array
@@ -183,7 +214,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
-const createAdminIntoDB = async (password: string, payload: TFaculty) => {
+const createAdminIntoDB = async (password: string, payload: TFaculty,multerProfileImg:any) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
@@ -200,6 +231,21 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     session.startTransaction();
     //set  generated id
     userData.id = await generateAdminId();
+
+    if (multerProfileImg) {
+      const imgName = `${userData.id}-${payload?.name?.firstName}`;
+      const imgMulterFilePath = multerProfileImg?.path;
+      const { secure_url } = await uploadImgToCloudinary(
+        imgName,
+        imgMulterFilePath,
+      );
+      payload.profileImg = secure_url; // profile image from cloudinary
+      if (!secure_url) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to upload image');
+      }
+      
+    }
+
 
     // create a user (transaction-1)
     const newUser = await UserModel.create([userData], { session });
@@ -239,6 +285,8 @@ const getMe = async (userId: string, role: string) => {
     result = await Admin.findOne({ id: userId }).populate('user');
   } else if (role === USER_ROLE.faculty) {
     result = await Faculty.findOne({ id: userId }).populate('user');
+  }else if (role === USER_ROLE['super-admin']) {
+    result = await UserModel.findOne({ id: userId });
   }
 
   // const result = await

@@ -7,15 +7,16 @@ import { studentValidation } from './student.zod.validation';
 
 const router = express.Router();
 
-router.get('/', StudentController.getAllStudents);
+router.get('/',authCheck(USER_ROLE.admin, USER_ROLE['super-admin'],USER_ROLE.faculty), StudentController.getAllStudents);
 router.get(
   '/:id',
-  authCheck(USER_ROLE.admin, USER_ROLE.faculty),
+  authCheck(USER_ROLE.admin, USER_ROLE['super-admin'],USER_ROLE.faculty),
   StudentController.getSingleStudent,
 );
-router.delete('/:id', StudentController.deleteSingleStudent);
+router.delete('/:id',authCheck(USER_ROLE.admin, USER_ROLE['super-admin']), StudentController.deleteSingleStudent);
 router.patch(
   '/:id',
+  authCheck(USER_ROLE.admin, USER_ROLE['super-admin']),
   validateRequest(studentValidation.updateStudentZodValidationSchema),
   StudentController.updateSingleStudent,
 );
