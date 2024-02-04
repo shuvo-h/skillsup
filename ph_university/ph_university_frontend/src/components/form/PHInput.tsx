@@ -1,3 +1,4 @@
+import { Form } from 'antd';
 import Input from 'antd/es/input/Input';
 import { Controller } from 'react-hook-form';
 
@@ -12,16 +13,13 @@ const PHInput = ({type='text',id='',name='',label='',defaultValue=undefined}:TPH
 
     
     return (
-        <div style={{marginBottom:'20px'}}>  
-            {
-                label && <label htmlFor={id}>{label}: </label>
-            }
-            {/* <input {...register(name)} type={type} id={id} /> */}
-            
+        <div style={{marginBottom:'20px'}}> 
             <Controller 
                 name={name}
                 defaultValue={defaultValue}
-                render={({field})=> <Input {...field} type={type} id={id} defaultValue={defaultValue} />}
+                render={({field})=> <Form.Item label={label}>
+                    <Input {...field} type={type} id={id} defaultValue={defaultValue} />
+                </Form.Item>}
             />
         </div>
     );

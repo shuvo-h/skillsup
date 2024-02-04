@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Row } from 'antd';
 import { FieldValues  } from 'react-hook-form';
 import { authApi } from '../redux/features/auth/authApi';
@@ -44,9 +45,9 @@ const Login = () => {
             dispatch(setUser({user,token:response.data.accessToken}))
             toast.success('Login successfull',{id:toastId,duration:2000})
             navigate(`/${user.role}/dashboard`)
-        } catch (error) {
+        } catch (error:any) {
             console.log(error);
-            toast.error('something went wrong',{id:toastId,duration:2000})
+            toast.error(error?.data?.message ||'something went wrong',{id:toastId,duration:2000})
         }
     }
     return (
