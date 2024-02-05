@@ -4,7 +4,7 @@ import { Controller } from "react-hook-form";
 type PHSelectProps = {
     label: string;
     name: string;
-    options:  {value: string | number, label: string}[];
+    options: { value: string; label: string; disabled?: boolean }[] | undefined;
     disabled?: boolean;
     defaultValue?: string;
 }
@@ -15,10 +15,10 @@ const PHSelect = ({label,name,options,disabled, defaultValue}:PHSelectProps) => 
     return (
         <Controller 
             name={name}
-            render={({field:{onChange},fieldState:{error}})=>(
+            render={({field,fieldState:{error}})=>(
                 <Form.Item label={label}>
                     <Select
-                        onChange={onChange}
+                        {...field}
                         defaultValue={defaultValue}
                         style={{width:'100%'}}
                         options={options}

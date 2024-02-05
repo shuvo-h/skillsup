@@ -1,12 +1,6 @@
-import { ReactNode } from "react";
-import { TUserPaths } from "../types";
-import { NavLink } from "react-router-dom";
 
-type TSidebarItem = {
-    key: string;
-    label: ReactNode;
-    children?: TSidebarItem[];
-  };
+import { TSidebarItem, TUserPaths } from "../types";
+import { NavLink } from "react-router-dom";
 
   
 export const sidebarItemsGenerator = (navBarItems:TUserPaths[],role:string) =>{
@@ -22,10 +16,12 @@ export const sidebarItemsGenerator = (navBarItems:TUserPaths[],role:string) =>{
               key: item.name, 
               label: item.name, 
               children: item.children.map(child=>{
+                if (child.name) {
                   return {
                       key: child.name,
                       label: <NavLink to={`/${role}/${child.path}`}>{child.name}</NavLink>
                   }
+                }
               }) 
           });
         }
