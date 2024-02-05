@@ -15,7 +15,7 @@ const PHSelect = ({label,name,options,disabled, defaultValue}:PHSelectProps) => 
     return (
         <Controller 
             name={name}
-            render={({field:{onChange}})=>(
+            render={({field:{onChange},fieldState:{error}})=>(
                 <Form.Item label={label}>
                     <Select
                         onChange={onChange}
@@ -25,6 +25,9 @@ const PHSelect = ({label,name,options,disabled, defaultValue}:PHSelectProps) => 
                         disabled={disabled}
                         size={"large"}
                     />
+                    {
+                        error && <small style={{color:"red"}}>{error.message}</small>
+                    }
                 </Form.Item>
             )}
         />

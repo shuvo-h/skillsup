@@ -143,10 +143,14 @@ const assignFacultiesWithCourseIntoDB = async (
 
 
   const getFacultiesWithCourseFromDB = async (courseId: string) => {
-    const result = await CourseFacultyModel.findOne({course:courseId}).populate(
+    const query = {};
+    // const result = await CourseFacultyModel.findOne({course:courseId}).populate('faculties',);
+    const courserQuery = new QueryBuilder(CourseFacultyModel.find({course:courseId}).populate(
       'faculties',
-    );
-    return {data:result,meta:{}as any};
+    ),query);
+  const result = await courserQuery.modelQuery;
+  const meta = await courserQuery.countTotal();
+    return {data:result,meta};
   };
 
 const removeFacultiesWithCourseFromDB = async (
