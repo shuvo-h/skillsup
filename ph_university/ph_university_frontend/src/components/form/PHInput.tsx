@@ -8,8 +8,9 @@ type TPHInputProps = {
     name?:string;
     label?:string;
     defaultValue?:string;
+    disabled?:boolean
 }
-const PHInput = ({type='text',id='',name='',label='',defaultValue=undefined}:TPHInputProps) => {
+const PHInput = ({type='text',id='',name='',label='',disabled=false,defaultValue=undefined}:TPHInputProps) => {
 
     
     return (
@@ -18,7 +19,13 @@ const PHInput = ({type='text',id='',name='',label='',defaultValue=undefined}:TPH
                 name={name}
                 defaultValue={defaultValue}
                 render={({field})=> <Form.Item label={label}>
-                    <Input {...field} type={type} id={id} defaultValue={defaultValue} />
+                    <Input 
+                        {...field} 
+                        type={type} 
+                        id={id} 
+                        defaultValue={defaultValue} 
+                        disabled={disabled}
+                    />
                 </Form.Item>}
             />
         </div>

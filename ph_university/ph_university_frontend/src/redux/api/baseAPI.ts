@@ -5,6 +5,7 @@ const baseUrl = `http://localhost:5000/api/v1`;
 const baseQuery = fetchBaseQuery({
     baseUrl,
     credentials: "include", // add this to request the backend to set cookies on the request header 
+    
     prepareHeaders: (headers,api) =>{
         const {getState} = api;
         const token = (getState() as RootState).auth.token;
@@ -44,5 +45,6 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs,BaseQueryApi,DefinitionTy
 export const baseAPI = createApi({
     reducerPath: 'baseApi',
     baseQuery: baseQueryWithRefreshToken,
+    tagTypes:['semester','courses'],
     endpoints: ()=>({}),
 })

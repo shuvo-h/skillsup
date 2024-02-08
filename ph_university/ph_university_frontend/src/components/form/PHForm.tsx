@@ -24,6 +24,7 @@ const PHForm = ({children,onSubmit,defaultValues,resolver}:TPHFormProps) => {
     const methods = useForm(formConfig);
 
     const submit:SubmitHandler<FieldValues> = (data:FieldValues) =>{
+        
         onSubmit(data);
         methods.reset();
     }

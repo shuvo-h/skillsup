@@ -29,6 +29,31 @@ export const userManagementAPI = baseAPI.injectEndpoints({
             
         }),
         
+        getAllFaculties: builder.query({
+            query: (args) =>{
+                const params = new URLSearchParams();
+                if (args) {
+                    args.forEach((item:TQueryParams) =>{
+                        params.append(item.name,String(item.value));
+                    })
+                }
+                // params.append('name','Fall')
+                return {
+                    url: '/faculties',
+                    method: "GET",
+                    params,
+                }
+            },
+            
+            transformResponse:(res:TResponseRedux<TStudent[]>) =>{
+                return {
+                    data: res.data,
+                    meta: res.meta,
+                } 
+            }
+            
+        }),
+        
         addStudent: builder.mutation({
             query: (bodyFormData) =>{
                 console.log(Object.fromEntries(bodyFormData));
