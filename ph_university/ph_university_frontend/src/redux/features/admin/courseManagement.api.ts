@@ -95,6 +95,33 @@ export const courseManagementAPI = baseAPI.injectEndpoints({
       invalidatesTags: ["courses"],
     }),
 
+    getCourseFaculties: builder.query({
+      query: (courseId) => {
+        return {
+          url: `/courses/${courseId}/get-faculties`,
+          method: "GET",
+        };
+      },
+      providesTags: ["courses"],
+      transformResponse: (res: TResponseRedux<any>) => {
+        return {
+          data: res.data,
+          meta: res.meta,
+        };
+      },
+    }),
+
+    addOfferedCourse: builder.mutation({
+      query: (bodyData) => {
+        return {
+          url: "/offered-courses/create-offered-course",
+          method: "POST",
+          body: { ...bodyData },
+        };
+      },
+      invalidatesTags: ["courses"],
+    }),
+
 
   }),
 

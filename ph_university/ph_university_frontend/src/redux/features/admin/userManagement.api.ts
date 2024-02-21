@@ -65,5 +65,17 @@ export const userManagementAPI = baseAPI.injectEndpoints({
                 }
             },
         }),
+
+
+        changePassword: builder.mutation({
+            query: (bodyFormData) =>{
+                return {
+                    url: '/auth/change-password',
+                    method: "POST",
+                    body:bodyFormData,
+                }
+            },
+        }),
+
     })
 })

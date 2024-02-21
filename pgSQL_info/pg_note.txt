@@ -1,0 +1,12 @@
+General commands:
+>>  select version();
+>>  \l                      // show list of databases (backshash L)
+>>  \c databaseName         // switch(connect) to a new database
+>>  \d                      // show the list of tables in a database
+>>  create table test_table(name varchar(50));  // create a new table with name test_table
+>>  \dn                     // show the schema in a table
+>>  \d+                     // show owner, size, access method,schema
+>>  \conninfo               // show the connection info like databaseName, userName, host, port
+>>  \q                      // quite the psql shell or terminal
+
+

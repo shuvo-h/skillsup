@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Layout, Menu } from "antd";
 import { sidebarItemsGenerator } from "../../utilities/sidebarItemsGenerator";
 import { adminPaths } from "../../routes/admin.routes";
@@ -5,7 +6,8 @@ import { TSidebarItem } from "../../types";
 import { facultyPaths } from "../../routes/faculty.routes";
 import { studentPaths } from "../../routes/student.routes";
 import { useAppSelector } from "../../redux/storeHook";
-import { authGetters } from "../../redux/features/auth/authSlice";
+import { TUser, authGetters } from "../../redux/features/auth/authSlice";
+import { verifyToken } from "../../utilities/verifyToken";
 const {  Sider } = Layout;
 
 const userRole = {
@@ -15,7 +17,11 @@ const userRole = {
 
 }
 const Sidebar = () => {
-  const user = useAppSelector(authGetters.selectCurrentUser);
+  const token = useAppSelector(authGetters.selectCurrentToken);
+  let user;
+  if (token) {
+    user = verifyToken(token) as TUser;
+  }
   
 
     let sidebarItems: TSidebarItem[]=[];
@@ -32,6 +38,7 @@ const Sidebar = () => {
             break;
     
         default:
+          sidebarItems = []
             break;
     }
     return (

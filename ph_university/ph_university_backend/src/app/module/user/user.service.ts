@@ -88,7 +88,8 @@ console.log("ok");
       userData.id = await generateStudentId(admissionSemester);
     }
     
-
+    console.log(userData);
+    
     // upload profile image to cloudinary
     if (multerProfileImg?.path) {
       const imgName = `${userData.id}-${studentData.name.firstName}`;

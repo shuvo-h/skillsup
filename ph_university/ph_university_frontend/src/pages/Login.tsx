@@ -15,8 +15,8 @@ const Login = () => {
     const dispatch = useAppDispatch();
 
     const defaultFormValue = {
-        userId: "A-0001",
-        password:"admin123"
+        userId: "F-0001",
+        password:"faculty123"
     }
     /*
     const {register,handleSubmit} = useForm({
@@ -44,6 +44,9 @@ const Login = () => {
             const user = verifyToken(response.data.accessToken) as TUser;
             dispatch(setUser({user,token:response.data.accessToken}))
             toast.success('Login successfull',{id:toastId,duration:2000})
+            if (response.data.needsPasswordChange) {
+                navigate(`/${user.role}/change-password`)
+            }
             navigate(`/${user.role}/dashboard`)
         } catch (error:any) {
             console.log(error);

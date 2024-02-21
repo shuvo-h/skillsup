@@ -19,6 +19,7 @@ export const generateStudentId = async (payload: TAcademicSemester) => {
   // full id: 2023 02 0001
   let currentId = (0).toString(); //01
   const lastStudentId = await findLastStudentId();
+console.log(lastStudentId);
 
   const lastStudentSemesterCode = lastStudentId?.substring(4, 6); // 01
   const lastStudentYear = lastStudentId?.substring(0, 4); // 2030
