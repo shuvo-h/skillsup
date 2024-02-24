@@ -1,12 +1,91 @@
 General commands:
 >>  select version();
 >>  \l                      // show list of databases (backshash L)
->>  \c databaseName         // switch(connect) to a new database
+>>  \c [databaseName]       // switch(connect) to a new database
 >>  \d                      // show the list of tables in a database
->>  create table test_table(name varchar(50));  // create a new table with name test_table
+>>  create table [test_table](name varchar(50));  // create a new table with name test_table
 >>  \dn                     // show the schema in a table
 >>  \d+                     // show owner, size, access method,schema
 >>  \conninfo               // show the connection info like databaseName, userName, host, port
 >>  \q                      // quite the psql shell or terminal
 
 
+// user access controll of the pSQL database: 
+>>  psql -U userName -d your_database_name                                  // login with user to a targeted database
+>>  \du                                                                     // show list of user role for database 
+>>  create user [userName] with login encrypted password ['123456'];        // create a new user who can manage database, initally this user will have no permission, so give permission to it.
+>>  create role [roleName] with login encrypted password ['123456'];        // create a role to give controll database
+>>  grant all privileges on table [tableName] to [userName]                 // give permission of a table to a user. 'all privileges' means full CRUD 
+>>  grant [select] on table [tableName] to [userName]                       // give Read or select permission to the user
+>>  revoke [select] on table [tableName] from [userName]                    // remove Read or select permission from the user
+
+
+
+SQL commands classification: 
+    - DDl: create, drop, alter, truncate        // (DDL=data definition lang)can create or remove table or database
+    - DML: insert, update, delete               // (DML=data management lang)can modify data from tables or database
+    - DCL: grant, revoke                        // (DCL=data control lang)can control user access of tables or database
+    - TCL: commit, rollback, savepoint          // (TCL=transection control lang)can control transection during data modification
+    - DQL: select                               // (DQL=data query lang)can query data from tables
+
+
+Data type
+    - boolean: true, false, null
+    - number: 
+        - int: 4 bytes range(+-2,147,483,648)
+        - bigint: 8 bytes range(+-9,223,372,036,854,775,808)
+        - smallint: 2 bytes range(+-32,768)
+        - float4: 4 bytes & 6 digit precision
+        - float8: 8 bytes & 15 digit precision
+        - numeric: variable bytes(depend on input precision) bytes range(unlimited precision), ex: Numeric(4,3)
+        - serial: range(like integer), auto increment
+    - character: 
+        - char: fixed length and storage is given during create column, if string is small than the column space, then it is padded with space and take full of the column. ex: CHAR(10) means a fixed-length string with a fixed length 10
+        - varchar: variable length character type. Length is not specified and can vary up to the specified maximum length. no padding is added. MOre storage efficient when dealing with variable length string. ex: VARCHAR(255) means a variable length string with a maximum length 255 
+        - text: a variable length type similar to VHARCHAR. It is not fixed-length. Typically used for longer text strings where the exact length is not known or can vary widely. Contain large amount og text like blogpost.
+    - timestamptz: TIMESTAMPTZ(TIMESTAMP WITH TIME ZONE)
+    - binary
+    - json
+    - uuid
+    - array
+    - xml
+
+// Initial commands:
+********************************DATABASE CRUD**********************************
+>>  \l                                                      // check list of available database
+>>  CREATE DATABASE [databaseName]                          // create a new database
+>>  ALTER DATABASE [dbOldName] RENAME TO [dbNewName]        // change database name
+>>  DROP DATABASE [databaseName]                            // delete a database
+
+********************************TABLE CRUD**********************************
+>>  CREATE TABLE [tableName](
+        column1 datatype constraint,
+        column2 datatype constraint,
+        column3 datatype constraint,
+        ........................
+    );                                  // create a new table
+                    CREATE TABLE person(
+                        id SERIAL PRIMARY KEY,
+                        person_id SERIAL,
+                        first_name VARCHAR(50) NOT NULL,
+                        last_name VARCHAR(50) UNIQUE,
+                        customer_id INTEGER REFERENCE customers(customer_id),
+                        status BOOLEAN DEFAULT true. 
+                        age INTEGER CHECK (age >= 18),
+                        isActive BOOLEAN,
+                        dob DATE
+                    );
+                    Constraints:
+                        - NOT NULL: must have a value
+                        - UNIQUE:  can't be duplicate
+                        - REFERENCES foreignTableName(foreignColumnName)
+                        - DEFAULT: set the default value
+                        - CHECK: add a if condition to test the custom condition
+
+
+>> ALTER TABLE [tableName] RENAME TO [newTableName]         // rename a table name
+>> DROP TABLE [tableName]                                   // delete or remove a table from database
+>> INSERT INTO tableName (column1, column2, column3) 
+                VALUES(value1_1,value1_2,value1_3),
+                VALUES(value2_1,value2_2,value2_3),
+                VALUES(value3_1,value3_2,value3_3),
