@@ -1,0 +1,67 @@
+Workbench:
+>> CREATE DATABASE IF NOT EXISTS newDBname;
+>> USE databaseName;            // it will make the mysql workbench query terminal to use only for this database
+>> DROP DATABASE IF EXISTS oldDBname;
+
+
+MySQL datatype:
+    type    --   usage
+    CHAR        CHAR(50)
+    VARCHAR     VARCHAR(50)
+    BLOB        BLOB(50)
+    INT         INT
+    TINYINT     TINYINT
+    BIGINT      BIGINT
+    BIT         BIT(2)
+    FLOAT       FLOAT
+    DOUBLE      DOUBLE
+    BOOLEAN     BOOLEAN
+    DATE        DATE
+    YEAR        YEAR
+
+Signed vs Unsigned number type:
+        usage          ---      type          
+    TINYINT UNSIGNED            TINYINT UNSIGNED(0 to 255)
+    SMALLINT                    SMALLINT( -32768 to 32767)          
+    INT                         INT( -2147483648 to 2147483647)          
+    BIGINT                      BIGINT(-9223372036854775808 to 9223372036854775807)          
+
+
+OPERATORS:
+    Arithmetic: +,-,*,/,%
+    Comparison: =, !=, >, >=, <, <=
+    Logical: ALL, LIKE, ANY, BETWEEN, AND, OR, NOT, IN
+    Bitwise: &, |
+
+
+
+ - Insert Query:
+    >> INSERT INTO tableName
+        (fullName,age,isMarried)
+        VALUES
+        (name1,18,true),
+        (name1,24,false),
+        ..............
+    
+
+
+Search Query:
+    >> SELECT age,fullName 
+        FROM student 
+        WHERE fullName IN ("name1","name2","name3") 
+        AND age BETWEEN 32 AND 45
+        OR age > 50
+        ORDER BY age DESC   // DESC | ASC
+        LIMIT 7;
+    
+Aggregate Functions:
+    - COUNT()
+    - MAX()
+    - MIN()
+    - SUM()
+    - AVG()
+    >> SELECT id,fullName, AVG(age)
+        FROM student
+        GROUP BY id,fullName
+        ORDER BY AVG(age), id 
+        LIMIT 4;

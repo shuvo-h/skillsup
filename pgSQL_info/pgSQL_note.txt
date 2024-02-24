@@ -22,11 +22,11 @@ General commands:
 
 
 SQL commands classification: 
-    - DDl: create, drop, alter, truncate        // (DDL=data definition lang)can create or remove table or database
-    - DML: insert, update, delete               // (DML=data management lang)can modify data from tables or database
-    - DCL: grant, revoke                        // (DCL=data control lang)can control user access of tables or database
-    - TCL: commit, rollback, savepoint          // (TCL=transection control lang)can control transection during data modification
-    - DQL: select                               // (DQL=data query lang)can query data from tables
+    - DDl: create, drop, alter, truncate, rename        // (DDL=data definition lang)can create or remove table or database
+    - DML: insert, update, delete                       // (DML=data management lang)can modify data from tables or database
+    - DCL: grant, revoke                                // (DCL=data control lang)can control user access of tables or database
+    - TCL: start transaction, commit, rollback, savepoint                  // (TCL=transection control lang)can control transection during data modification
+    - DQL: select                                       // (DQL=data query lang)can query data from tables
 
 
 Data type
@@ -65,15 +65,18 @@ Data type
         ........................
     );                                  // create a new table
                     CREATE TABLE person(
-                        id SERIAL PRIMARY KEY,
+                        id SERIAL,
                         person_id SERIAL,
                         first_name VARCHAR(50) NOT NULL,
                         last_name VARCHAR(50) UNIQUE,
-                        customer_id INTEGER REFERENCE customers(customer_id),
+                        customer_id INTEGER REFERENCE customers(customerId),
                         status BOOLEAN DEFAULT true. 
                         age INTEGER CHECK (age >= 18),
                         isActive BOOLEAN,
                         dob DATE
+                        PRIMARY KEY(id),
+                        FOREIGN KEY (customer_id) REFERENCES customers(customerId),
+                        CONSTRAINT age_check CHECK(age >= 18 AND status=true)
                     );
                     Constraints:
                         - NOT NULL: must have a value
