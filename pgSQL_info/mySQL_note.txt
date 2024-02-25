@@ -33,7 +33,11 @@ OPERATORS:
     Logical: ALL, LIKE, ANY, BETWEEN, AND, OR, NOT, IN
     Bitwise: &, |
 
-
+CONDITIONS & Keywords:
+    WHERE, HAVING,
+    GROUP BY, 
+    ORDER BY xxx ASC|DESC,
+    LIMIT 
 
  - Insert Query:
     >> INSERT INTO tableName
@@ -46,13 +50,24 @@ OPERATORS:
 
 
 Search Query:
+        // general query
+    >> SELECT column(s)
+        FROM table_name
+        WHERE condition 
+        GROUP BY column(s)
+        HAVING condition 
+        ORDER BY column(s) ASC|DESC
+        LIMIT number_value
+        OFFSET skip_number;
+
     >> SELECT age,fullName 
         FROM student 
         WHERE fullName IN ("name1","name2","name3") 
         AND age BETWEEN 32 AND 45
         OR age > 50
         ORDER BY age DESC   // DESC | ASC
-        LIMIT 7;
+        LIMIT 7
+        OFFSET 8;
     
 Aggregate Functions:
     - COUNT()
@@ -60,8 +75,136 @@ Aggregate Functions:
     - MIN()
     - SUM()
     - AVG()
-    >> SELECT id,fullName, AVG(age)
+    >> SELECT age, AVG(marks)
         FROM student
-        GROUP BY id,fullName
-        ORDER BY AVG(age), id 
+        GROUP BY age
+        HAVING MAX(age) > 15
+        ORDER BY AVG(age), id DESC
         LIMIT 4;
+
+Table related Queries:
+    - ALTER: to change schema or column
+    - ADD(add a new column):
+        >> ALTER TABLE table_name 
+            ADD COLUMN column_name datatype constraints;
+
+    - DROP (drop an old column):
+        >> ALTER TABLE table_name 
+            DROP COLUMN column_name;
+
+    - RENAME TO (change table name):
+        >> ALTER TABLE table_name 
+            RENAME TO new_table_name;
+
+    - CHANGE Column(change column name):
+        >> ALTER TABLE table_name 
+            CHANGE COLUMN old_column_name new_column_name new_data_type new_constraints;
+    
+    - MODIFY(change datatype/constraint):
+        >> ALTER TABLE table_name 
+            MODIFY column_name new_data_type new_constraints;
+    
+    - TRUNCATE(delete all rows or empty the table but keep the columns & constraints)
+        >> TRUNCATE table_name;         
+
+UPDATE OR Modification:
+        // set this to update value safely
+    >> SET SQL_SAFE_UPDATES = 0;
+
+        // add more columns 'roll' & 'marks' to an existing table "student"
+    >> ALTER TABLE table_name                          
+        ADD COLUMN new_column_name1 INT NOT NULL,
+        ADD COLUMN new_column_name2 TINYINT DEFAULT 0;
+        eg: ALTER TABLE student 
+            ADD COLUMN marks TINYINT DEFAULT 0;
+
+        // general update 
+    >> UPDATE table_name
+        SET col1=val1, col2=val2
+        WHERE condition;
+        eg: UPDATE student SET marks=78 WHERE id=14;
+
+Delete Operations:
+        // delete based on condition 
+    >> DELETE FROM table_name 
+        WHERE condition
+        eg: DELETE FROM student where marks < 33;
+
+Cascading for Foreign Key(FK):
+    - ON UPDATE CASCADE: when we update a row with PRIMARY KEY in parent table, it automatically update the row of child table for that referenced row. 
+    - On DELETE CASCADE: when we delete a row with PRIMARY KEY from parent table, it automatically delete the row from child table for that referenced row. 
+    eg:
+        // parent table
+        CREATE TABLE IF NOT EXISTS dept(
+            id INT PRIMARY KEY,
+            name VARCHAR(50)
+        );
+        // child table (reference)
+        CREATE TABLE IF NOT EXISTS teacher(
+            id INT PRIMARY KEY,
+            name VARCHAR(50),
+            dept_id INT,
+            FOREIGN KEY(dept_id) REFERENCES dept(id)
+            ON UPDATE CASCADE
+            ON DELETE CASCADE
+        );
+
+
+Joins in SQL:
+        eg:
+         SELECT * FROM department
+         INNER JOIN course
+         ON department.id = course.department_id;
+    Types of join:
+        ~ Inner Join (Intersection): Return records that have matching values in both tables.
+            >> SELECT column(s)
+                FROM tableA
+                INNER JOIN tableB
+                ON tableA.col_name = tableB.col_name;
+        ~ Outer joins: 
+            - Left Join (Intersection + Left Set (A))
+            - Right Join (Intersection + Right Set(B))
+            - UNION:(Full Join | LEFT JOIN UNION RIGHT JOIN)
+                >> SELECT Column(s) FROM tableA as A
+                    LEFT JOIN tableB as B
+                    ON A.id = B.a_id
+                    UNION
+                    SELECT COLUMN(s) FROM tableA as A
+                    RIGHT JOIN tableB as B
+                    ON A.id = B.a_id;
+            - UNION ALL: UNION & UNION ALL are same. To use it:
+                            i. every SELECT should have same no. of columns 
+                            ii. columns must have similar data type
+                            iii. columns in every SELECT should be in same order
+                            iv. "UNION" only return unique rows, and "UNION ALL" return all means with duplicate rows.
+        ~ Left Exclusive Join: keep only left table where right table's id are null
+                >> SELECT column(s) FROM tableA
+                    LEFT JOIN tableB
+                    ON tableA.id = tableB.tableA_id
+                    WHERE tableB.tableA_id IS NULL;
+        ~ RIGHT Exclusive Join: keep only right table where left table's id are null
+                >> SELECT column(s) FROM tableA
+                    RIGHT JOIN tableB
+                    ON tableA.id = tableB.tableA_id
+                    WHERE tableA.id IS NULL;
+        ~ SELF JOIN: It is a regular join where the table is joined with itself.
+                >> SELECT Column(s) FROM tableA as A
+                    JOIN tableA as B                            // joining same tableA on different column
+                    ON A.col_2nd_name = B.col_5th_name 
+        
+Sub Query: A subquery or inner query or nested query is a query within another SQL query. It involves 2 select statements.
+    >> SELECT column(s) FROM table_name
+        WHERE col_name operator (subquery);
+        eg: SELECT name,marks FROM student
+            WHERE marks > (
+                SELECT AVG(marks) FROM student
+            );
+
+MySQL Views: A view is a virtual table based on the result-set of an SQL statement. 
+    // create a virtual view table by taking rollNo,marks and name from the student table.
+    >> CREATE VIEW view1 AS 
+        SELECT rollNo, name, marks FROM student;
+    >> SELECT * FROM view1;
+    >> DROP VIEW view1;
+
+
