@@ -86,9 +86,141 @@ Data type
                         - CHECK: add a if condition to test the custom condition
 
 
->> ALTER TABLE [tableName] RENAME TO [newTableName]         // rename a table name
+Table related Queries:
+    - ALTER: to change schema or column
+    - ADD(add a new column):
+        >> ALTER TABLE table_name 
+            ADD COLUMN column_name datatype constraints;
+
+    - DROP (drop an old column):
+        >> ALTER TABLE table_name 
+            DROP COLUMN column_name;
+
+    - RENAME TO (change table name):
+        >> ALTER TABLE table_name 
+            RENAME TO new_table_name;
+
+    - RENAME COLUMN(change column name):
+        >> ALTER TABLE table_name 
+            RENAME COLUMN old_column_name TO new_column_name;
+    
+    - SET/DROP(change datatype/constraint):
+        >> ALTER TABLE table_name                                           // table name
+            ALTER COLUMN column_name SET DATA TYPE data_type,               // data type
+            ALTER COLUMN column_name SET DEFAULT default_value NOT NULL,    // constraints                    
+            ALTER COLUMN column_name SET NOT NULL,                            
+            ALTER COLUMN column_name DROP NOT NULL;                            
+    - TRUNCATE(delete all rows or empty the table but keep the columns & constraints)
+        >> TRUNCATE TABLE table_name;         
+
+    - ADD CONSTRAINT(add constraint on a column): give a name of constraint = `constraint_name+table_name+column_name`
+        >> ALTER TABLE table_name
+            ADD CONSTRAINT constraint_name_table_name_col_name CONSTRAINT_NAME(col_name);
+            eg: ALTER TABLE users
+                ADD CONSTRAINT unique_users_age UNIQUE(age);
+                ADD CONSTRAINT pk_users_age PRIMARY KEY(age);
+    
+
 >> DROP TABLE [tableName]                                   // delete or remove a table from database
 >> INSERT INTO tableName (column1, column2, column3) 
                 VALUES(value1_1,value1_2,value1_3),
                 VALUES(value2_1,value2_2,value2_3),
                 VALUES(value3_1,value3_2,value3_3),
+
+
+SELECT: Retrive data from tables
+    - SELECT
+    - DISTINCT  : DISTINCT ensure only unique rows are returned, no duplicate
+    - FROM 
+    - WHERE 
+    - ORDER 
+    - GROUP BY  : group rows that have the same value in specified cols
+    - HAVING    : Filters the result of a GROUP BY clause based on specified condition (usually aggregated functions)
+    - JOIN 
+    - LIMIT     : sort the data
+    - OFFSET    : number of rows to skip before starting to return rows.
+
+                        
+    >> SELECT DISTINCT col1 as "customName",
+        UPPER(col2),
+        AVG(col3), 
+        CONCAT(fname,' ',lname) AS full_name, 
+        CASE 
+            WHEN age >= 18 
+                THEN 'Adult' 
+            ELSE 'Minor' 
+        END AS "Age Category",
+        COALESCE(email,"email not given") as "Email"                              
+        FROM TABLE table1
+        JOIN table2 ON table1.column3 = table2.column5
+        WHERE condition1 AND condition2
+        GROUP BY column1                                        
+        HAVING aggregate_function(column2) > value               
+        ORDER BY column1 DESC                                   
+        LIMIT 10
+        OFFSET 5;                                               
+
+SELECT Functions: Operate on a set of rows and return a single value summarizing on the set. Often used with the GROUP BY clouse.
+    ~ Aggregate Functions:
+        - COUNT()
+        - MAX()
+        - MIN()
+        - SUM()
+        - AVG()
+        >> SELECT age, AVG(marks)
+            FROM student
+            GROUP BY age
+            HAVING MAX(age) > 15
+            ORDER BY AVG(age), id DESC
+            LIMIT 4;
+
+    ~ Scalar Functions: Operate on each single row and return single value for each row.
+        - UPPER(text)
+        - LOWER(text)
+        - CONCAT(text1,text2,...)
+        - INITCAP(text)                 : Capitalizes the first letter of each word in a string.
+        - LENGTH(text)
+        - SUBSTRING(text FROM startLengthNumber FOR characterlengthNumber)
+        - TRIM(text)
+        - REPLACE(text, from_substring, to_substring) : replace a part of text. eg. REPLACE('hello world', 'world', 'universe'); returns 'hello universe'.
+        - POSITION(substring IN string) : Returns the position of a substring within a string. eg. POSITION('l' IN 'hello'); returns 3.
+        - COALESCE(value1, value2, ...) : Returns the first non-null value in the list. When we want not to send any null value, then use this method. It will return the next value if first value being NULL. eg.  COALESCE(NULL, 'hello', 'world'); returns 'hello'.
+        - ROUND(number [, precision])   : Rounds a number to a specified number of decimal places. eg. ROUND(3.14159, 2)  returns 3.14
+        - CAST(expression AS type): Converts a value to a specified data type. eg, CAST('123' AS INTEGER) returns 123.
+
+IS vs Equal(=):
+    ~ IS:
+        - typically use IS NULL or IS NOT NULL to check whether a column or expression contains a NULL value.
+        - When you want to check for NULL values explicitly.
+        - For comparisons involving NULL values.
+    ~ Equal(=):
+        - The = operator is used for equality comparison between two values or expressions.
+        - When you want to compare non-NULL values for equality.
+        - For regular value comparisons.
+
+
+Operators:
+    - IN        : checks whether a value matches any value in a list.
+                    >> SELECT * FROM employees WHERE department_id IN (101, 102, 103);
+    - BETWEEN   : checks whether a value lies within a specified range.
+                    >> SELECT * FROM products WHERE price BETWEEN 10 AND 100;
+    - LIKE      : Search for a specified pattern in a column. % is used as a wildcard to match any sequence of characters, and _ matches any single character.
+                    >> SELECT * FROM customers WHERE last_name LIKE 'Sm%';   // It match the last_name start with 'Sm....'.
+                    >> SELECT * FROM customers WHERE last_name LIKE '%Sm';   // It match the last_name ends with '...Sm'.
+                    >> SELECT * FROM customers WHERE last_name LIKE '__sm%';   // It match the last_name first 2 characters can be anything, 3rd & 4th character will be 'sm' then ends can be any other characters. Here the double underscore '__' represent each character index. 
+    - ILIKE     : performs a case-insensitive pattern match.
+                    >> SELECT * FROM products WHERE product_name ILIKE '%apple%';
+
+
+
+Delete Operations:
+    -  delete based on condition 
+        >> DELETE FROM table_name 
+            WHERE condition
+            eg: DELETE FROM student where marks < 33;
+
+Update OPeration:
+    >> UPDATE table_name
+        SET col1=val1, col2=val2
+        WHERE condition;
+        eg: UPDATE student SET marks=78 WHERE id=14;
