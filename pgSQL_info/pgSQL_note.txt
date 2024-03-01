@@ -58,6 +58,11 @@ Data type
 >>  DROP DATABASE [databaseName]                            // delete a database
 
 ********************************TABLE CRUD**********************************
+- ON DELETE CASCADE: delete the child/refrenced docs 
+- ON DELETE SET NULL: set the id value NULL when the referenced doc deleted
+- ON DELETE RESTRICT / ON DELETE ON ACTION(default): don't allow to delete the parent doc until all child ref docs are deleted
+- ON DELETE SET DEFAULT: set the default value
+
 >>  CREATE TABLE [tableName](
         column1 datatype constraint,
         column2 datatype constraint,
@@ -77,6 +82,11 @@ Data type
                         PRIMARY KEY(id),
                         FOREIGN KEY (customer_id) REFERENCES customers(customerId),
                         CONSTRAINT age_check CHECK(age >= 18 AND status=true)
+                        /% use any one of the below four constraints for ref %/
+                        ON DELETE CASCADE
+                        ON DELETE RESTRICT          // it is default constraint
+                        ON DELETE SET NULL
+                        ON DELETE SET DEFAULT
                     );
                     Constraints:
                         - NOT NULL: must have a value
@@ -150,7 +160,8 @@ SELECT: Retrive data from tables
                 THEN 'Adult' 
             ELSE 'Minor' 
         END AS "Age Category",
-        COALESCE(email,"email not given") as "Email"                              
+        COALESCE(email,"email not given") as "Email",
+        EXTRACT(year from date_of_birth::date)                              
         FROM TABLE table1
         JOIN table2 ON table1.column3 = table2.column5
         WHERE condition1 AND condition2
@@ -224,3 +235,141 @@ Update OPeration:
         SET col1=val1, col2=val2
         WHERE condition;
         eg: UPDATE student SET marks=78 WHERE id=14;
+
+
+
+Date & Time:
+    >> SHOW TIMEZONE:    // current timezone
+    >> TIMESTAMP WITHOUT TIME ZONE, TIMESTAMP WITH TIME ZONE;
+    >> SELECT NOW();
+    >> SELECT CURRENT_DATE;  
+    >> SELECT NOW()::DATE;
+    >> SELECT NOW()::TIME;
+    >> SELECT TO_CHAR(NOW(),'YYYY/MM/DD');      // format to a specific format
+    >> SELECT CURRENT_DATE - INTERVAL '1 YEAR'; // interval of time;
+    >> SELECT AGE(CURRENT_DATE,'1995-07-29');   // get age time by using age() method
+    >> SELECT EXTRACT(year from '2024-02-15'::date);
+
+
+
+Joins in SQL:
+        eg:
+         SELECT * FROM department
+         INNER JOIN course
+         ON department.id = course.department_id;
+    Types of join:
+        ~ Inner Join: Return records that have matching values in both tables.
+            >> SELECT column(s)
+                FROM tableA
+                INNER JOIN tableB
+                ON tableA.col_name = tableB.col_name;
+        ~ Left Join : Return all records from left table and from right table only matching rows.
+            >> SELECT column(s)
+                FROM tableA
+                LEFT OUTER JOIN tableB
+                ON tableA.col_name = tableB.col_name;
+        ~ Right Join : Return all records from right table and from left table only matching rows.
+            >> SELECT column(s)
+                FROM tableA
+                RIGHT OUTER JOIN tableB
+                ON tableA.col_name = tableB.col_name;
+        
+        ~ FULL Join : Return all records from both right table and  left table.
+            >> SELECT column(s)
+                FROM tableA
+                FULL OUTER JOIN tableB
+                ON tableA.col_name = tableB.col_name;
+        ~ CROSS Join (AxB): Return all multiply row records from both right table and  left table.
+            >> SELECT column(s)
+                FROM tableA
+                CROSS JOIN tableB;
+        ~ NATURAL Join: Return all records from both right table and  left table with same column name and data type. must have to be a common column name with same data type. suppose shop.user_id = product.user_id; here the "user_id" column is common in both "product" and "shop" table with the same data type id as INTEGER.
+            >> SELECT column(s)
+                FROM tableA
+                NATURAL JOIN tableB;
+        
+
+
+Sub Query:
+      (sub_query) SELECT MAX(salary) from employee WHERE department_name='HR';
+    - SELECT * FROM employee WHERE salary > (SELECT MAX(salary) from employee WHERE department_name='HR');
+
+
+
+PostgreSQL Views: Views are virtual tables generated from the result of a SQL query. We can write a query and store them in a variable, so that we can re-use the SELECT query which return new transformed table
+    // create a virtual view table by taking rollNo,marks and name from the student table.
+    >> CREATE VIEW view_student_table AS 
+        SELECT rollNo, name, marks FROM student;
+    >> SELECT * FROM view_student_table;
+    >> INSERT INTO student(name,marks) VALUES("ab",45);
+    >> DROP VIEW IF EXISTS view_student_table;          // always refresh by re-creating the view table after inserting any data to main table to keep update the view table
+    >> CREATE VIEW view_student_table AS 
+        SELECT rollNo, name, marks FROM student;
+
+
+
+Functions/Procedure in pgSQL: It return dynamically complex pre-written query. Main difference between function and preocedure is that function return data and procedure doesn't return anything.
+    :: Function Syntax
+    >> CREATE FUNCTION function_name(param1 data_type1,param2 data_type2,)
+        RETURNS data_type/INT/DATE/VOID/BOOL
+        LANGUAGE SQL
+        AS
+        $$
+            SELECT * FROM table_name WHERE column_name1 = param1 AND column_name2 != param2;
+        $$;
+    >> SELECT  function_name();         // It will run the query inside the above function
+
+    :: Procedure Syntax
+    >> CREATE PROCEDURE procedure_name(param_emp_id INT)
+        LANGUAGE PLPGSQL
+        AS
+        $$
+            DECLARE
+	        exist_employee_id_var INTEGER;
+            BEGIN
+                SELECT employee_id INTO exist_employee_id_var FROM employee where employee_id = param_emp_id;           // look for the row by using param value and store it in variable exist_employee_id_var
+                DELETE FROM employee where employee_id = exist_employee_id_var;                                         // use the variable value to delete row, not param data.
+                RAISE NOTICE 'Successful! Your custom message.';
+            END
+        $$;
+    >> CALL procedure_name();       // insted of SELECT, we use CALL.
+
+
+
+Trigger in pgSQL: it execute/run when any event occure in database. It is a database object that aautomatically executes a specified set of actions in response to certain database events or conditons.
+    - Table level events:
+        - INSERT, UPDATE, DELETE , TRUNCATE, 
+    - Database level events:
+        - Database Startup, Database Shutdown, Connection start and end etc.
+    
+    >> CREATE TRIGGFER trigger_name
+        {BEFORE | AFTER | INSTED OF} {INSERT | UPDATE | DELETE | TRUNCATE}
+        ON table_name 
+        [FOR EACH ROW]
+        EXECUTE FUNCTION function_name();
+
+    - Example:
+        // Store deleted users information in a new table when delete a user
+        // step 1: Trigger Function 
+        >> CREATE FUNCTION save_deleted_user_fn()
+            RETURNS TRIGGER 						-- Must return "TRIGGER"
+            LANGUAGE plpgsql
+            AS
+            $$
+                INSERT INTO delete_users_table VALUES (OLD.column1,OLD.column2,now());	-- OLD is the row to be deleted which will come from TRIGGER. now() is the current time
+                RAISE NOTICE 'Successful! Deleted user is listed.';
+                RETURN OLD;                                                             -- must return something
+            $$;
+
+        // step 2: Create the Trigger 
+        >> CREATE TRIGGER save_deleted_employee_trigger
+            BEFORE DELETE 
+            ON employee_table
+            FOR EACH ROW
+            EXECUTE FUNCTION save_deleted_user_fn();
+
+
+
+Indexing in pgSQL:
+    >> CREATE INDEX idx_table_name_column_name_as_index_name
+        ON table_name(column_name);                              // on which table's which column the index will be created
