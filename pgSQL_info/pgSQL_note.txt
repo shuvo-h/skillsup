@@ -78,7 +78,8 @@ Data type
                         status BOOLEAN DEFAULT true. 
                         age INTEGER CHECK (age >= 18),
                         isActive BOOLEAN,
-                        dob DATE
+                        rating NUMERIC(3,2)                                 // total digit 3, after point 2 digit. eg, 4.75
+                        dob DATE check(dob > current_date)
                         PRIMARY KEY(id),
                         FOREIGN KEY (customer_id) REFERENCES customers(customerId),
                         CONSTRAINT age_check CHECK(age >= 18 AND status=true)
@@ -120,6 +121,8 @@ Table related Queries:
             ALTER COLUMN column_name SET DEFAULT default_value NOT NULL,    // constraints                    
             ALTER COLUMN column_name SET NOT NULL,                            
             ALTER COLUMN column_name DROP NOT NULL;                            
+            DROP CONSTRAINT unique_users_age;                            
+            DROP CONSTRAINT pk_users_email;                            
     - TRUNCATE(delete all rows or empty the table but keep the columns & constraints)
         >> TRUNCATE TABLE table_name;         
 
@@ -128,7 +131,7 @@ Table related Queries:
             ADD CONSTRAINT constraint_name_table_name_col_name CONSTRAINT_NAME(col_name);
             eg: ALTER TABLE users
                 ADD CONSTRAINT unique_users_age UNIQUE(age);
-                ADD CONSTRAINT pk_users_age PRIMARY KEY(age);
+                ADD CONSTRAINT pk_users_email PRIMARY KEY(email);
     
 
 >> DROP TABLE [tableName]                                   // delete or remove a table from database
@@ -160,11 +163,11 @@ SELECT: Retrive data from tables
                 THEN 'Adult' 
             ELSE 'Minor' 
         END AS "Age Category",
-        COALESCE(email,"email not given") as "Email",
+        COALESCE(email,"email not given") as "Email",           // set default value if the field value is empty, COALESCE(Null,Null,Null,'myValue',null)  here coalesce return the first truthy value, escape all nulls
         EXTRACT(year from date_of_birth::date)                              
         FROM TABLE table1
         JOIN table2 ON table1.column3 = table2.column5
-        WHERE condition1 AND condition2
+        WHERE condition1 AND condition2                         // WHERE email IS NOT NULL, WHERE email IS NULL,   // we can't check as email = NULL or email != null
         GROUP BY column1                                        
         HAVING aggregate_function(column2) > value               
         ORDER BY column1 DESC                                   
@@ -263,6 +266,12 @@ Joins in SQL:
                 FROM tableA
                 INNER JOIN tableB
                 ON tableA.col_name = tableB.col_name;
+            // tableA.col_name & tableB.col_name can be duplicate, so give a alias name for each. here the 'col_name' column will be duplicate so we can't select one. to solve this we give a alias name ad access the 'col_name' using that table alias name  
+            >> SELECT newAliasNameTableB.col_name,column(s)
+                FROM tableA newAliasNameTableA
+                INNER JOIN tableB newAliasNameTableB
+                ON newAliasNameTableA.col_name = newAliasNameTableB.col_name;
+
         ~ Left Join : Return all records from left table and from right table only matching rows.
             >> SELECT column(s)
                 FROM tableA
