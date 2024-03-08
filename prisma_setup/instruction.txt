@@ -1,0 +1,50 @@
+prisma Schema:
+
+- every time you change in schema, must migrate to database:
+    >> npx prisma migrate dev --name init
+    >> npx prisma studio                      // open prisma models and tables in browser
+    >
+
+
+model SchemaName {
+  id Int @id @default(autoincrement())    // @id = primary key
+  title String
+  published Boolean @default(false)
+  authorName String?                  // ? = optional
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+prisma create:
+  >> create({data})
+  >> createMany({data:[...datalist]})
+  >> 
+
+prisma update:
+  >> update({where,data})
+  >> updateMany({where,data})
+  >> upsert({where,update,create})  // if exist, update, else create
+
+prisma delete:
+  >> delete({where})
+  >> deleteMany({where})
+  >> 
+
+
+prisma query:
+  >> findMany({
+      where:{},
+      select:{filed1:true, field2:true,...},
+      skip: 5,    // skip
+      take: 10,    // limit
+      cursor:{
+        id: 98569   // specify from which row or id to start, it will imptove performance
+      },
+      orderBy:{
+        propertyNmae: "asc" | "desc"
+      },
+    })
+  >> findFirst / findFirstOrThrow
+  >> findUnique / findUniqueOrThrow           // only apply on unoque constraint properties
+  >> 
