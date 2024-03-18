@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  DOCTOR
+  PATIENT
+}
+
+model User{
+  // define columns
+  id String @id @default(uuid())
+  email String @unique
+  password String
+  role UserRole
+  needPasswordChange Boolean @default(true)
+  status UserStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // make reference/relation. must make relatin in Admin model
+  admin Admin?
+  
+  // rewrite the table name from model
+  @@map("users")
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+}
+
+model Admin {
+  // define columns
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  profilePhoto String?    // optional
+  contactNumber String
+  isDeleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // make reference/relation, must receive in Ref model
+  user User @relation(fields: [email],references: [email])
+
+  // rewrite the table name from model
+  @@map("admins")
+}

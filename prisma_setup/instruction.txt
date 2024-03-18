@@ -3,8 +3,12 @@ prisma Schema:
 - every time you change in schema, must migrate to database:
     >> npx prisma migrate dev --name init
     >> npx prisma studio                      // open prisma models and tables in browser
-    >
-
+    >> npx prisma validate                    // check if prisma schema is valid or have any error
+    >> npx prisma format                      // to format the schema file to look better
+    >> npx prisma db pull --print              // colsole the remote/db real schema to chek if the db schema in details
+    >> npx prisma db pull                     // create a new schema file based on existing database
+    >> npx prisma db push                     // without migrate push the schema to database
+    >> npx prisma                             // show all the prisma common commands
 
 model SchemaName {
   id Int @id @default(autoincrement())    // @id = primary key

@@ -10,9 +10,9 @@ const prisma = new PrismaClient({
 });
 
 prisma.$on("query",(e)=>{
-    console.log("Query = ",e.query);
+    // console.log("Query = ",e.query);
     console.log("Duration = ",e.duration,"ms");
-    console.log("Date & Time = ",e.timestamp);
+    // console.log("Date & Time = ",e.timestamp);
     
 })
 
@@ -107,7 +107,117 @@ const filterData = async() =>{
     // console.dir(result,{depth:Infinity});
 }
 
+// aggregated query
+// aggregate can only applied on number fields, only '_count' is applied on any field
+const aggregatedQuery = async() =>{
+    const result = await prisma.user.aggregate({
+        _avg:{              // _sum, _count, _max, _min
+            age: true
+        },
+        // where:{},
+        // skip
+        // orderBy
+        // cursor
+    })
+    console.log(result);
+}
+// groupBy query
+const groupByQuery = async() =>{
+    const result = await prisma.post.groupBy({
+        by: ["published"],
+        _count: {
+            title: true
+        },
+        having:{
+            authorId:{
+                _min:{
+                    gte: 1
+                }
+            }
+        },
+    })
+    console.log(result);
+}
+
+// batch transection API query
+const transectionAPiQuery = async() =>{
+    const createUserOperation = prisma.user.create({
+        data:{
+            username:"daniel Malko77",
+            email: "damiel@mail.com",
+            age: 24,
+        }
+    })
+    
+    const updateUserOperation = prisma.user.update({
+        where:{
+            id: 27,
+        },
+        data:{
+            age: 30
+        }
+    })
+
+    // Do transection and await here
+    const [createUserResult,updateuserResult] = await prisma.$transaction([
+        createUserOperation,
+        updateUserOperation,
+    ])
+    console.log(createUserResult,updateuserResult); 
+}
+
+// interactive transection API query
+const interactiveTransectionAPiQuery = async() =>{
+    const result = await prisma.$transaction(async(transactionClient)=>{
+        // operation 1
+        const gerAllPost = await transactionClient.post.findMany({
+            where:{
+                published: true
+            }
+        })
+        
+        // operation 2
+        const countUser = await transactionClient.user.count();
+        if (countUser < 5) {
+            throw new Error("user is lower than expected count")
+        }
+
+        // operation 3
+        const updateUser = await transactionClient.user.update({
+            where:{
+                id: 27
+            },
+            data:{
+                age: 25
+            }
+        });
+
+        return {
+            gerAllPost,
+            countUser,
+            updateUser,
+        }
+
+    })
+    console.log(result); 
+}
+
+
+// RAW query using prisma
+const rawQueryUsingPrisma = async() =>{
+    const result = await prisma.$queryRaw `SELECT * FROM "users"`
+    
+    console.log(result); 
+}
+
+
+
 module.exports = {
     queryAndPopulate,
     filterData,
+    aggregatedQuery,
+    groupByQuery,
+    transectionAPiQuery,
+    interactiveTransectionAPiQuery,
+    rawQueryUsingPrisma,
 }
