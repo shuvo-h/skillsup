@@ -8,6 +8,7 @@ import httpStatus from "http-status";
 import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
 import { notFoundHandler } from "./app/middleware/notFoundHandler";
 import cookieParser from 'cookie-parser';
+import "./config/config"
 
 export const app: Application = express();
 app.use(cors());
