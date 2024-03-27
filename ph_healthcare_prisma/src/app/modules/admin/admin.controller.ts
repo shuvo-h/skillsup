@@ -1,15 +1,19 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
-import { adminServices } from "./admin.service";
-import { pick } from "../../../shared/pick";
-import { adminFilterableFields } from "./admin.constant";
-import { sendRes } from "../../../shared/sendResponse";
+import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import { catchAsync } from "../../../shared/catchAsync";
+import { pick } from "../../../shared/pick";
+import { sendRes } from "../../../shared/sendResponse";
+import { adminFilterableFields } from "./admin.constant";
+import { adminServices } from "./admin.service";
 
-const getAdmin = async (req: Request, res: Response, next: NextFunction) => {
+const getAllFromDB = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const filters = pick(req.query, adminFilterableFields);
   const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
-  const result = await adminServices.getAdminFromDb(
+  const result = await adminServices.getAllFromDb(
     filters as any,
     options as any
   );
@@ -46,8 +50,8 @@ const updateByAdminId = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
-    console.log(id);
-    
+  console.log(id);
+
   const result = await adminServices.updateByIdIntoDb(id, req.body);
 
   sendRes(res, {
@@ -92,7 +96,7 @@ const softDeleteFromDb = async (
 };
 
 export const adminControllers = {
-  getAdmin: catchAsync(getAdmin),
+  getAllFromDB: catchAsync(getAllFromDB),
   getByAdminId: catchAsync(getByAdminId),
   updateByAdminId: catchAsync(updateByAdminId),
   deleteByAdminId: catchAsync(deleteByAdminId),

@@ -33,6 +33,8 @@ model User{
 
   // make reference/relation. must make relatin in Admin model
   admin Admin?
+  doctor Doctor?
+  patient Patient?
   
   // rewrite the table name from model
   @@map("users")
@@ -60,4 +62,72 @@ model Admin {
 
   // rewrite the table name from model
   @@map("admins")
+}
+
+
+model Doctor {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  profilePhoto String?    // optional
+  contactNumber String
+  address String?
+  registrationNumber String
+  experience Int @default(0)
+  gender Gender
+  appointmentFee Int
+  qualification String
+  currentWorkingPlace String
+  designation String
+  isDeleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [email],references: [email])
+  doctorSpecialties   DoctorSpecialties[]
+
+  @@map("doctors")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+
+model Patient {
+  id            String   @id @unique @default(uuid())
+  email         String   @unique
+  name          String
+  profilePhoto  String?
+  contactNumber String?
+  address       String?
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(references: [email], fields: [email])
+
+  @@map("patients")
+}
+
+
+model Specialties {
+  id                String              @id @default(uuid())
+  title             String
+  icon              String
+  doctorSpecialties DoctorSpecialties[]
+
+  @@map("specialties")
+}
+
+model DoctorSpecialties {
+  specialitiesId String
+  specialities   Specialties @relation(fields: [specialitiesId], references: [id])
+
+  doctorId String
+  doctor   Doctor @relation(fields: [doctorId], references: [id])
+
+  @@id([specialitiesId, doctorId])
+  @@map("doctor_specialties")
 }
