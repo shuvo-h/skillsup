@@ -89,6 +89,9 @@ model Doctor {
   @@map("doctors")
 }
 
+
+
+
 enum Gender {
   MALE
   FEMALE
