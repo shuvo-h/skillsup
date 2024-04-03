@@ -1,9 +1,12 @@
+
 import express from 'express';
 import { userRouter } from '../modules/user/user.routes';
 import { adminRouter } from '../modules/admin/admin.router';
 import { authRouter } from '../modules/auth/auth.routes';
 import { specialitiesRouter } from '../modules/specialities/specialities.route';
-import { doctorRouter } from '../modules/doctor/doctor.route';
+import { DoctorRoutes } from '../modules/doctor/doctor.route';
+import { PatientRoutes } from '../modules/Patient/patient.route';
+import { ScheduleRoutes } from '../modules/schedule/schedule.routes';
 export const v1ModuleRouter = express.Router();
 
 const moduleRoutes = [
@@ -25,7 +28,15 @@ const moduleRoutes = [
     },
     {
         path:"/doctor",
-        route: doctorRouter
+        route: DoctorRoutes
+    },
+    {
+        path:"/patient",
+        route: PatientRoutes
+    },
+    {
+        path:"/schedule",
+        route: ScheduleRoutes
     },
 ];
 

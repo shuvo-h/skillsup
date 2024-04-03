@@ -4,6 +4,20 @@ import { sendRes } from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { specialitiesService } from "./specialities.services";
 
+
+
+const getAllFromDB: RequestHandler = async (req, res, next) => {
+ 
+  
+  const result = await specialitiesService.getAllFromDB();
+  sendRes(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    data: result,
+    message: "Specialties data fetched successfully",
+  });
+};
+
 const insertIntoDb: RequestHandler = async (req, res, next) => {
   console.log("Hitt");
   
@@ -15,7 +29,20 @@ const insertIntoDb: RequestHandler = async (req, res, next) => {
     message: "Specialties created successfully",
   });
 };
+const deleteFromDB : RequestHandler = async (req, res, next) => {
+  console.log("Hitt");
+  const { id } = req.params;
+  const result = await specialitiesService.deleteFromDB(id);
+  sendRes(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    data: result,
+    message: "Specialties created successfully",
+  });
+};
 
 export const specialitiesController = {
+  getAllFromDB: catchAsync(getAllFromDB),
   insertIntoDb: catchAsync(insertIntoDb),
+  deleteFromDB: catchAsync(deleteFromDB),
 };
