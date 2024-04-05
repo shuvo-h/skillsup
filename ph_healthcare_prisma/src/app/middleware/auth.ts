@@ -5,7 +5,7 @@ import ApiError from "../errors/ApiError";
 import httpStatus from "http-status";
 import { UserRole } from "@prisma/client";
 
-type TDecodeuser = {
+export type TDecodeuser = {
     email: string,
     role: UserRole,
     iat: number,
