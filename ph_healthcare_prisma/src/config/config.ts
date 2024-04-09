@@ -22,4 +22,15 @@ export const env = {
         CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
         CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
     },
+    ssl:{
+        storeId: process.env.SSL_STORE_ID,
+        storePass: process.env.SSL_STORE_PASSWORD,
+        successUrl: process.env.SSL_SUCCESS_URL,
+        failUrl: process.env.SSL_FAIL_URL,
+        cancelUrl: process.env.SSL_CANCEL_URL,
+        sslPaymentApi: process.env.SSL_PAYMENT_API,
+        sslValidationApi: process.env.SSL_VALIDATION_API,
+
+    },
 }
+
