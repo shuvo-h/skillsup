@@ -10,6 +10,8 @@ import { ScheduleRoutes } from '../modules/schedule/schedule.routes';
 import { doctorScheduleRouter } from '../modules/doctorSchedule/doctorSchedule.route';
 import { AppointmentRoutes } from '../modules/appointment/appointment.routes';
 import { PaymentRoutes } from '../modules/payment/payment.routes';
+import { PrescriptionRoutes } from '../modules/prescription/prescription.routes';
+import { ReviewRoutes } from '../modules/review/review.routes';
 export const v1ModuleRouter = express.Router();
 
 const moduleRoutes = [
@@ -53,7 +55,6 @@ const moduleRoutes = [
         path: '/payment',
         route: PaymentRoutes
     },
-    /*
     {
         path: '/prescription',
         route: PrescriptionRoutes
@@ -62,6 +63,7 @@ const moduleRoutes = [
         path: '/review',
         route: ReviewRoutes
     },
+    /*
     {
         path: '/meta',
         route: MetaRoutes

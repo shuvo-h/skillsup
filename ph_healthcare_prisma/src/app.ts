@@ -9,6 +9,8 @@ import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
 import { notFoundHandler } from "./app/middleware/notFoundHandler";
 import cookieParser from 'cookie-parser';
 import "./config/config"
+import cron from 'node-cron';
+import { AppointmentService } from "./app/modules/appointment/appointment.service";
 
 export const app: Application = express();
 app.use(cors());
@@ -17,6 +19,16 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 
 
+
+
+cron.schedule('* * * * *', () => {
+  console.log('running a task every minute');
+  try {
+      AppointmentService.cancelUnpaidAppointments();
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 // app.use("/api/v1/user",userRouter)
 // app.use("/api/v1/admin",adminRouter)

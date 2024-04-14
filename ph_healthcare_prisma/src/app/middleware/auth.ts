@@ -25,13 +25,13 @@ declare global {
         try {
             const token = req.headers.authorization;
             if (!token) {
-                throw new ApiError(httpStatus.UNAUTHORIZED,"Token is required to create admin");
+                throw new ApiError(httpStatus.UNAUTHORIZED,"Token is required");
             }
             const decodeduser = jwtHelpers.verifyToken(token,env.JWT_SECRET as string) as TDecodeuser;
             console.log(decodeduser);
             
             if (roles.length && !roles.includes(decodeduser.role)) {
-                throw new ApiError(httpStatus.FORBIDDEN,"Must be a admin to create another admin");
+                throw new ApiError(httpStatus.FORBIDDEN,"You are not permitted to access this resource");
             }
             
             req.user = decodeduser;
