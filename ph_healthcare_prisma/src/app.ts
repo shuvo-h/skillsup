@@ -24,7 +24,8 @@ app.use(cookieParser())
 cron.schedule('* * * * *', () => {
   console.log('running a task every minute');
   try {
-      AppointmentService.cancelUnpaidAppointments();
+      // currently commenting the method call 
+      // AppointmentService.cancelUnpaidAppointments();
   } catch (error) {
     console.log(error);
   }

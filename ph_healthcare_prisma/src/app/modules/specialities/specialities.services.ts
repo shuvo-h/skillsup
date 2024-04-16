@@ -15,7 +15,6 @@ const insertIntoDb = async(req:Request) =>{
     }else{
       req.body.icon = "N/A"
     }
-    console.log(req.body);
     
     const result = await prisma.specialties.create({
         data: req.body

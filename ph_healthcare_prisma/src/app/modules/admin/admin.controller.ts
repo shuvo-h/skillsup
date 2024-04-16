@@ -50,7 +50,6 @@ const updateByAdminId = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
-  console.log(id);
 
   const result = await adminServices.updateByIdIntoDb(id, req.body);
 

@@ -19,7 +19,6 @@ const getAllFromDB: RequestHandler = async (req, res, next) => {
 };
 
 const insertIntoDb: RequestHandler = async (req, res, next) => {
-  console.log("Hitt");
   
   const result = await specialitiesService.insertIntoDb(req);
   sendRes(res, {
@@ -30,7 +29,6 @@ const insertIntoDb: RequestHandler = async (req, res, next) => {
   });
 };
 const deleteFromDB : RequestHandler = async (req, res, next) => {
-  console.log("Hitt");
   const { id } = req.params;
   const result = await specialitiesService.deleteFromDB(id);
   sendRes(res, {

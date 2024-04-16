@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import path from 'path';
-console.log(path.join(process.cwd(),'.env'));
 
 dotenv.config({path: path.join(process.cwd(),'.env')})
 export const env = {

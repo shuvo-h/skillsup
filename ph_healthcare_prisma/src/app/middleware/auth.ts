@@ -28,7 +28,7 @@ declare global {
                 throw new ApiError(httpStatus.UNAUTHORIZED,"Token is required");
             }
             const decodeduser = jwtHelpers.verifyToken(token,env.JWT_SECRET as string) as TDecodeuser;
-            console.log(decodeduser);
+            // console.log(decodeduser);
             
             if (roles.length && !roles.includes(decodeduser.role)) {
                 throw new ApiError(httpStatus.FORBIDDEN,"You are not permitted to access this resource");

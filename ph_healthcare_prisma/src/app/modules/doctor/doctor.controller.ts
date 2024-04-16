@@ -9,7 +9,7 @@ import { sendRes } from '../../../shared/sendResponse';
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     const filters = pick(req.query, doctorFilterableFields);
-    console.log(filters);
+   
     
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
