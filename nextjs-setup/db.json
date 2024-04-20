@@ -1,0 +1,29 @@
+{
+  "shoes": [
+    {
+      "id": 1,
+      "title": "Men's Running Shoes",
+      "price": 5400.99,
+      "description": "Comfortable and durable running shoes for men. Ideal for both casual wear and athletic activities."
+    },
+    {
+      "id": 2,
+      "title": "Women's Sneakers",
+      "price": 409.99,
+      "description": "Stylish and lightweight sneakers for women. Perfect for everyday use and workouts."
+    },
+    {
+      "id": 3,
+      "title": "Kids' Sports Shoes",
+      "price": 309.99,
+      "description": "Colorful and fun sports shoes for kids. Designed to provide support and stability for active play."
+    },
+    {
+      "id": 4,
+      "title": "Unisex Hiking Boots",
+      "price": 709.99,
+      "description": "Versatile and rugged hiking boots suitable for all genders. Built to withstand rough terrain and adverse weather conditions."
+    }
+  ]  
+
+}

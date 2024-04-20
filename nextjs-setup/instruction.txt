@@ -1,0 +1,40 @@
+Theme with DaisiUI:
+    - In root layout, add the  data-theme="light"
+      eg, <html lang="en" data-theme="light">
+
+      
+Image Optimization:
+    - add the below in next.config.js file to allow all external host for image. remove the 'port' and 'pathname'. the hosetname: '**' means allow all domains/origins
+    const nextConfig = {
+        images:{
+            remotePatterns: [
+                {
+                protocol: 'https',
+                hostname: '**',
+                },
+            ], 
+        }
+    };
+
+Import Alias:
+    Relative path: we need to use '../../../src/fileName' to import a file we need to go back useing double dot
+    Absolute path: we use '@' to decide that we are counting after '/src' folder
+    eg, 
+        - import testImg from "../../src/assets/test_img.jpg"
+        - import testImg from "@/assets/test_img.jpg"
+
+
+
+SSG: Static Site Generation
+    - by default, it keep api fetch data in caching 
+ISR: Incremental Static Re-Generation 
+    - It take {next:revalidate:10} a seconds, after this seconds, it recheck if any data changes in database, and the re-generate html based on updated data
+SSR: Server Side Rendering
+    - condition 1: For SSR, page.js component must be server component 
+    - condition 2:  must be async functional component
+
+Error Page when error got in SSR server component 
+    - create a /src/app/error.js file and create a error component and use "use client". so any error occur in any server component will display this error.js page
+
+    
+     
