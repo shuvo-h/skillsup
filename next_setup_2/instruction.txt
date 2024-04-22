@@ -1,0 +1,50 @@
+- parent page.js must be always server side component, and async component/
+- only child componenets make 'user client' component
+
+
+Data Fetching:
+SSG(Static Site)          // default behaviour
+    const res = await fetch('http://localhost:5000/blogs',{
+        cache:"force-cache",                           
+    })
+
+ISG(Incremental Static Generation); after every 30 seconds, this page will update the latest data and generate new HTML
+    const res = await fetch('http://localhost:5000/blogs',{
+        next:{
+            revalidate: 30
+        }
+    })
+
+SSR(Server Side Rendering)
+    const res = await fetch('http://localhost:5000/blogs',{
+        cache: "no-store",
+    })
+
+specific pages or data list to create static pages, rest will be SSR
+    export const generateStaticParams = async()=>{
+        const res = await fetch(`http://localhost:5000/blogs`,)
+        const blogs = await res.json();
+        const blogIdsToCreateStaticPage = blogs.map((blog:TBlog)=>{
+            return {
+                blogId: blog.id, // property name 'blogId' must be same with dynamic param value or the dunamic folder name value 
+            }
+        })
+        // generate first 3 static pages, rest will be SSR
+        return blogIdsToCreateStaticPage.slice(0,3)
+    }
+
+
+/src/actions/fileName.ts: Server Action file. this .ts file will be user as server file
+"use Server";
+export const createBlogByServerAction = async(payload:TBlog) =>{
+    const res = await fetch('http://localhost:5000/blogs',{
+        cache:"no-store",
+        method: "POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    const blogResult = await res.json();
+    return blogResult;
+}
