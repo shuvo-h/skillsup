@@ -5,3 +5,7 @@ dist
 build
 uploads
 migrations
+
+# ignore log files but keep folders
+next_full_app/HealthCare-Server/logs/winston/errors/*
+next_full_app/HealthCare-Server/logs/winston/successes/*
