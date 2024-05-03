@@ -1,5 +1,6 @@
 import Navbar from '@/components/shared/Navbar/Navbar';
 import Footer from '@/components/shared/footer/Footer';
+import { Container } from '@mui/material';
 import React from 'react';
 
 type TCommonLayoutProps = {
@@ -10,9 +11,9 @@ const CommonLayout = ({children}:TCommonLayoutProps) => {
     return (
         <>
             <Navbar />
-            <div className='min-h-screen'>
+            <Container component="main" maxWidth="xl" sx={{ minHeight: '100vh', paddingTop: 4, paddingBottom: 4 }}>
                 {children}
-            </div>
+            </Container>
             <Footer />
         </>
     );
