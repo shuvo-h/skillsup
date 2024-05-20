@@ -32,10 +32,10 @@ const RegisterPage = () => {
    
       const handleRegister = async(values:FieldValues) => {
         const data = modifyPayload(values);
-        console.log(data);
+        // console.log(data);
         try {
             const res = await registerPatientServerAction(data);
-            console.log(res);
+            // console.log(res);
             if (res.success) {
                 const userLOginfo = await userLoginServerAction({email:values.patient.email,password:values.password});
                 

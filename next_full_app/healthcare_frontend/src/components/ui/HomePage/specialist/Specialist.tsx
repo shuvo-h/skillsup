@@ -9,7 +9,7 @@ const Specialist = async() => {
         }
     })
     const result = await res.json()
-    console.log(result);
+    // console.log(result);
     
     return (
         <Container>
@@ -20,13 +20,13 @@ const Specialist = async() => {
                 </Box>
                 <Stack direction={"row"} gap={4} mt={5}>
                     {
-                        result.data?.map((speciality:any)=>(
+                        result.data?.slice(0,6)?.map((speciality:any)=>(
                             <Box key={speciality._id} sx={{
                                 flex:1,width:"150px",backgroundColor:"rgba(245,245,245,1)", border:"1px solid rgba(250,250,250,1)",borderRadius:"10px",textAlign:"center",padding:"40px 10px",
                                 "& img":{width:"50px",height:"50px",margin:'0 auto'},
                                 "&:hover":{ border:"1px solid blue",borderRadius:"10px",padding:"40px 10px"},
                                 }}>
-                                <Image width={100} height={100} src={speciality.icon} alt='Speciality icon' />
+                                <Image width={100} height={100} src={speciality.icon||"/"} alt='Speciality icon' />
                                 <Box>
                                 <Typography component='p' fontWeight={300} mt={2}>{speciality.title}</Typography>
                                 </Box>

@@ -48,7 +48,7 @@ const WhyUs = () => {
                         {
                             serviceData.map((service:any) => <Box sx={{display:"flex", gap:"15px",backgroundColor:"rgba(245,245,245,1)",padding:"15px",alignItems:"center",borderRadius:service.borderRadious,margin:"20px 0"}} key={service.title}>
                             <Box sx={{backgroundColor:"#fff",padding:"10px",borderRadius:"10px"}}>
-                                <Image src={service.imageSrc} alt='' width={50} height={100} />
+                                <Image src={service.imageSrc ||"/"} alt='' width={50} height={100} />
                             </Box>
                             <Box>
                                 <Typography variant='h6' component={"h6"} fontWeight={600}>
@@ -63,7 +63,7 @@ const WhyUs = () => {
                         
                     </Grid>
                     <Grid item md={6}>
-                        <Image style={{margin:"auto"}}  width={320} height={400} src={assets.images.whyDoctor} alt='' />
+                        <Image style={{margin:"auto"}}  width={320} height={400} src={assets.images.whyDoctor ||"/"} alt='' />
                     </Grid>
                 </Grid>
 

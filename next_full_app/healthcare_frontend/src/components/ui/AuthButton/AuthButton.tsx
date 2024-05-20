@@ -9,7 +9,7 @@ const AuthButton = () => {
     const userInfo = getUserInfo();
     const isLogin = isLoggedIn();
     const router = useRouter()
-    console.log({isLogin,userInfo});
+    // console.log({isLogin,userInfo});
     const handleLogout = () =>{
         removeUser()
         router.refresh(); // without reload, refresh the page

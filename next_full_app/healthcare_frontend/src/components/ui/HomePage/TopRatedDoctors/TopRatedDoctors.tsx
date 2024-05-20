@@ -20,7 +20,7 @@ const TopRatedDoctors = async() => {
                         doctors.map((doctor:any) =><Grid sx={{padding:"4px"}} md={4} key={doctor._id}>
                             <Card >
                                 <Box>
-                                    <Image src={doctor.profilePhoto} width={400} height={100} alt='' />
+                                    <Image src={doctor.profilePhoto ||"/"} width={400} height={100} alt='' />
                                 </Box>
                                 <CardContent>
                                     <Typography gutterBottom variant="h5" component="div">

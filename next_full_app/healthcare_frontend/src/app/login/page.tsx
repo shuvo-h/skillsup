@@ -24,11 +24,11 @@ const LoginPage = () => {
         
         try {
             const res = await userLoginServerAction(values);
-            console.log(res);
+            // console.log(res);
             if (res.success) {
                 toast.success(res.message)
                 storeUserInfo({accessToken:res.data?.accessToken})
-                router.push("/dashboard")
+                // router.push("/dashboard")
             }else{
                 toast.error(res.message)
             }

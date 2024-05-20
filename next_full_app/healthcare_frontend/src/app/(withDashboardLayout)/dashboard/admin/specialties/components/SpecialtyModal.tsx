@@ -1,7 +1,7 @@
 import PHFileUploader from "@/components/Forms/PHFileUploader";
 import PHForm from "@/components/Forms/PHForm";
-import PHInput from "@/components/Forms/PHInput";
-import PHModal from "@/components/Shared/PHModal/PHModal";
+import PHInputField from "@/components/Forms/PHInputField";
+import PHModal from "@/components/shared/PHModal/PHModal";
 import { useCreateSpecialtyMutation } from "@/redux/api/specialtiesApi";
 import { modifyPayload } from "@/utils/modifyPayload";
 import { Button, Grid } from "@mui/material";
@@ -22,7 +22,7 @@ const SpecialtyModal = ({ open, setOpen }: TProps) => {
     const data = modifyPayload(values);
     try {
       const res = await createSpecialty(data).unwrap();
-      console.log(res);
+      // console.log(res);
       if (res?.id) {
         toast.success("Specialty created successfully!!");
         setOpen(false);
@@ -37,7 +37,7 @@ const SpecialtyModal = ({ open, setOpen }: TProps) => {
       <PHForm onSubmit={handleFormSubmit}>
         <Grid container spacing={2}>
           <Grid item md={6}>
-            <PHInput name="title" label="Title" />
+            <PHInputField name="title" label="Title" />
           </Grid>
           <Grid item md={6}>
             <PHFileUploader name="file" label="Upload File" />

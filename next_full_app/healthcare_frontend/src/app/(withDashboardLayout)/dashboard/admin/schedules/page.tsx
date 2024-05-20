@@ -18,7 +18,7 @@ const SchedulesPage = () => {
    const schedules = data?.schedules;
    const meta = data?.meta;
 
-   console.log(schedules);
+   // console.log(schedules);
 
    useEffect(() => {
       const updateData = schedules?.map(
