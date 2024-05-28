@@ -1,100 +1,163 @@
-'use client'
-import { assets } from '@/assets/assetImages';
-import PHForm from '@/components/Forms/PHForm';
-import PHInputField from '@/components/Forms/PHInputField';
-import { storeUserInfo } from '@/services/actions/auth.service';
-import { userLoginServerAction } from '@/services/actions/userLogin';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Container, Grid, Stack, TextField, Typography } from '@mui/material';
+'use client';
+import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
+import assets from '@/assets';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React from 'react';
-import { useForm, SubmitHandler, FieldValues } from "react-hook-form"
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+// import { userLogin } from '@/services/actions/userLogin';
+// import { storeUserInfo } from '@/services/auth.services';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import PHForm from '@/components/Forms/PHForm';
+import PHInput from '@/components/Forms/PHInput';
 import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { userLoginServerAction } from '@/services/actions/userLogin';
+import { storeUserInfo } from '@/services/actions/auth.service';
 
-const loginValidationSchema = z.object({
-    email: z.string({required_error:"Email is required"}).email("Invalid email"),
-    password: z.string({required_error:"Password is required"}).min(6,"Must need 6 characters"),
-})
+export const validationSchema = z.object({
+   email: z.string().email('Please enter a valid email address!'),
+   password: z.string().min(6, 'Must be at least 6 characters'),
+});
+
 const LoginPage = () => {
-    const router = useRouter()
-      const handleLogin = async(values:FieldValues) => {
-        
-        try {
-            const res = await userLoginServerAction(values);
+   const [error, setError] = useState('');
+
+   const handleLogin = async (values: FieldValues) => {
+      // console.log(values);
+      try {
+         const res = await userLoginServerAction(values);
+         if (res?.data?.accessTokeLn) {
+            toast.success(res?.message);
+            storeUserInfo({ accessToken: res?.data?.accessToken });
+            // router.push("/dashboard");
+         } else {
+            setError(res.message);
             // console.log(res);
-            if (res.success) {
-                toast.success(res.message)
-                storeUserInfo({accessToken:res.data?.accessToken})
-                // router.push("/dashboard")
-            }else{
-                toast.error(res.message)
-            }
-        } catch (error:any) {
-            console.log(error.message);
-            toast.error(error.message)
-            
-        }
-        
+         }
+      } catch (err: any) {
+         console.error(err.message);
       }
+   };
 
-      const defaultValues = {
-        email: "",
-        password: "",
-      }
+   return (
+      <Container>
+         <Stack
+            sx={{
+               height: '100vh',
+               justifyContent: 'center',
+               alignItems: 'center',
+            }}
+         >
+            <Box
+               sx={{
+                  maxWidth: 600,
+                  width: '100%',
+                  boxShadow: 1,
+                  borderRadius: 1,
+                  p: 4,
+                  textAlign: 'center',
+               }}
+            >
+               <Stack
+                  sx={{
+                     justifyContent: 'center',
+                     alignItems: 'center',
+                  }}
+               >
+                  <Box>
+                     <Image
+                        src={assets.svgs.logo}
+                        width={50}
+                        height={50}
+                        alt='logo'
+                     />
+                  </Box>
+                  <Box>
+                     <Typography variant='h6' fontWeight={600}>
+                        Login PH HealthCare
+                     </Typography>
+                  </Box>
+               </Stack>
 
-    return (
-        <Container>
-            <Stack sx={{justifyContent:"center",alignItems:"center",height:"100vh"}}>
-                <Box sx={{maxWidth:600,width:'100%',boxShadow:1,borderRadious:1,p:4,textAlign:"center"}}>
-                <Stack sx={{justifyContent:"center",alignItems:"center"}}>
-                    <Box>
-                        <Image src={assets.svgs.logo} alt='' />
-                    </Box>
-                    <Box>
-                        <Typography variant='h6' fontWeight={600}>Login PH HealthCare</Typography>
-                    </Box>
-                </Stack>
-                <Box>
-                    <PHForm onSubmit={handleLogin} resolver={zodResolver(loginValidationSchema)} defaultValues={defaultValues}>
-                        <Grid container spacing={2} my={2}>
-                            <Grid item md={6}>
-                                <PHInputField 
-                                    name='email'
-                                    label="Email"
-                                    type='email'
-                                    fullWidth={true}
-                                    placeholder='eg. ab@example.com'
-                                    
-                                    />
-                            </Grid>
-                            <Grid item md={6}>
-                                <PHInputField 
-                                    name='password'
-                                    type='password'
-                                    
-                                    label="Password"
-                                    fullWidth={true}
-                                    placeholder='eg. 123456'
-                                />
-                            </Grid>
+               {error && (
+                  <Box>
+                     <Typography
+                        sx={{
+                           backgroundColor: 'red',
+                           padding: '1px',
+                           borderRadius: '2px',
+                           color: 'white',
+                           marginTop: '5px',
+                        }}
+                     >
+                        {error}
+                     </Typography>
+                  </Box>
+               )}
+
+               <Box>
+                  <PHForm
+                     onSubmit={handleLogin}
+                     resolver={zodResolver(validationSchema)}
+                     defaultValues={{
+                        email: '',
+                        password: '',
+                     }}
+                  >
+                     <Grid container spacing={2} my={1}>
+                        <Grid item md={6}>
+                           <PHInput
+                              name='email'
+                              label='Email'
+                              type='email'
+                              fullWidth={true}
+                           />
                         </Grid>
-                        <Typography mb={1} textAlign={'end'} component='p' fontWeight={300}>
-                            Forgot Password?
+                        <Grid item md={6}>
+                           <PHInput
+                              name='password'
+                              label='Password'
+                              type='password'
+                              fullWidth={true}
+                           />
+                        </Grid>
+                     </Grid>
+
+                     <Link href={'/forgot-password'}>
+                        <Typography
+                           mb={1}
+                           textAlign='end'
+                           component='p'
+                           fontWeight={300}
+                           sx={{
+                              textDecoration: 'underline',
+                           }}
+                        >
+                           Forgot Password?
                         </Typography>
-                        
-                        <Button type='submit' sx={{margin:"10px 0"}} fullWidth={true}>
-                            Login
-                        </Button>
-                        <Typography component='p' fontWeight={300}>Don&apos;t have an account? <Link href={'/register'}>Create Account</Link></Typography>
-                    </PHForm>
-                </Box>
-                </Box>
-            </Stack>
-        </Container>
-    );
+                     </Link>
+
+                     <Button
+                        sx={{
+                           margin: '10px 0px',
+                        }}
+                        fullWidth={true}
+                        type='submit'
+                     >
+                        Login
+                     </Button>
+                     <Typography component='p' fontWeight={300}>
+                        Don&apos;t have an account?{' '}
+                        <Link href='/register'>Create an account</Link>
+                     </Typography>
+                  </PHForm>
+               </Box>
+            </Box>
+         </Stack>
+      </Container>
+   );
 };
 
 export default LoginPage;
