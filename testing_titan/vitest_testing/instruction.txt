@@ -1,0 +1,7 @@
+>> npm install -D vitest
+
+~ In package.json, we need to add script:
+    "scripts": {
+        "test": "vitest --reporter verbose"
+    },
+

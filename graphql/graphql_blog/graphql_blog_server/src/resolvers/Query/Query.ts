@@ -25,6 +25,8 @@ export const Query = {
       return users
     },
     posts: async(parent:any,args:any,context:TContext)=>{
+      console.log("posts Q");
+      
       const posts = await context.prisma.post.findMany({
         where:{
           published: true

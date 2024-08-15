@@ -7,7 +7,7 @@ import { resolvers } from './resolvers';
 import { Prisma, PrismaClient } from "@prisma/client"
 import { DefaultArgs } from '@prisma/client/runtime/library';
 import { TTokenUser, jwtHelper } from './utils/jwtHelper';
-const prisma = new PrismaClient()
+export const prisma = new PrismaClient()
 
 export interface TContext {
   prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>
