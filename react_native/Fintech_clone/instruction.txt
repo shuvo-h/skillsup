@@ -1,0 +1,14 @@
+installation list:
+ - npx expo install expo-av
+ - npx expo install expo-asset
+
+
+To controll router or page navigation
+ - npx expo install @react-navigation/native
+ - npx expo install @react-navigation/native-stack
+ - npx expo install react-native-screens react-native-safe-area-context
+  - npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+  
+
+
+

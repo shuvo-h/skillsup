@@ -1,0 +1,2 @@
+    Make youtube speed faster
+>> document.querySelectorAll('video').forEach(v=>v.playbackRate = 3.5)
